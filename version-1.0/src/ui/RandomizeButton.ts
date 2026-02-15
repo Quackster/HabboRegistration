@@ -22,7 +22,7 @@ export function drawRandomizeButton(ctx: CanvasRenderingContext2D): void {
   }
 
   // Draw text label on top
-  ctx.fillStyle = '#FFFFFF';
+  ctx.fillStyle = '#000000';
   ctx.font = 'bold 11px Verdana';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
