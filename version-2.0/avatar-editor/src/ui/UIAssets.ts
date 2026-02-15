@@ -5,9 +5,9 @@ import { SpriteLoader } from '../rendering/SpriteLoader';
  * These IDs come from decompiled/symbolClass/symbols.csv
  * Image filename = (csvId - 2).png for decompiled UI assets.
  */
+const CLOUD_FRAME_COUNT = 13;
+
 const UI_ASSET_MAP: Record<string, number> = {
-  // Cloud animation sprite
-  'cloudAnimation': 11,          // 13-2=11
   // Preview icon
   'prevIconBg': 14,              // 16-2=14
   'prevIconMask': 17,            // 19-2=17
@@ -70,6 +70,7 @@ const UI_ASSET_MAP: Record<string, number> = {
 
 export class UIAssets {
   private spriteLoader: SpriteLoader;
+  private cloudFrames: HTMLImageElement[] = [];
 
   constructor(spriteLoader: SpriteLoader) {
     this.spriteLoader = spriteLoader;
@@ -77,13 +78,28 @@ export class UIAssets {
 
   async loadAll(): Promise<void> {
     const filenames = Object.values(UI_ASSET_MAP).map(id => `${id}.png`);
+    // Add cloud frame filenames
+    for (let i = 0; i < CLOUD_FRAME_COUNT; i++) {
+      filenames.push(`cloud/cloud_${i}.png`);
+    }
     await this.spriteLoader.preloadUIAssets(filenames);
+
+    // Cache cloud frame references in order
+    this.cloudFrames = [];
+    for (let i = 0; i < CLOUD_FRAME_COUNT; i++) {
+      const img = this.spriteLoader.getUIAsset(`cloud/cloud_${i}.png`);
+      if (img) this.cloudFrames.push(img);
+    }
   }
 
   get(name: string): HTMLImageElement | null {
     const id = UI_ASSET_MAP[name];
     if (id === undefined) return null;
     return this.spriteLoader.getUIAsset(`${id}.png`);
+  }
+
+  getCloudFrames(): HTMLImageElement[] {
+    return this.cloudFrames;
   }
 
   getAssetMap(): Record<string, number> {

@@ -142,9 +142,9 @@ export class HabboAvatarEditor {
     const genderSubIdx = this.state.figure.getGender() === 'F' ? 1 : 0;
     this.mainMenu.showMenuIndex(0, genderSubIdx);
 
-    // Body part menu — x=18 aligned with main tabs (MAIN_OFFSET_X)
+    // Body part menu (from AvatarEditorUi.as lines 160-161)
     this.bodyPartMenu = new BodyPartMenu(
-      18, 100,
+      3, 100,
       this.config.showClubSelections,
       this.uiAssets,
       this.hitRegions,
@@ -153,11 +153,9 @@ export class HabboAvatarEditor {
     );
     this.initBodyPartMenu();
 
-    // Color chooser — x=18 aligned with body part grid, y computed from grid bottom
-    const gridBottom = 100 + 3 * 45 + 2 * 9; // 253
-    const colorChooserY = gridBottom + 6 + 4 + 9; // 272 (gridPadding + borderGap + 9px border padding)
+    // Color chooser (from AvatarEditorUi.as lines 133-134)
     this.colorChooser = new ColorChooserMenu(
-      18, colorChooserY,
+      15, 270,
       this.uiAssets,
       this.hitRegions,
       this.state.eventBus
@@ -182,8 +180,7 @@ export class HabboAvatarEditor {
       this.hitRegions,
       this.state.eventBus,
       this.config.localization,
-      avatarDisplayX,
-      canvasWidth
+      avatarDisplayX
     );
 
     // Wire events

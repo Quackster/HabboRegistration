@@ -30,7 +30,7 @@ export const DEFAULT_CONFIG: EditorConfig = {
 };
 
 export const CANVAS_WIDTH_WITH_ARROWS = 495;
-export const CANVAS_WIDTH_NO_ARROWS = 440; // 303 + 5 + 130 (floor tile) + 2px margin
+export const CANVAS_WIDTH_NO_ARROWS = 435; // Flash stage width (confirmed from decompiled SWF)
 export const CANVAS_HEIGHT = 400; // Flash stage is 435x400 (confirmed from FFDEC frame exports)
 
 export const AVATAR_CANVAS_WIDTH = 64;
@@ -43,6 +43,16 @@ export const AVATAR_SCALE = 2;
 export const AVATAR_DISPLAY_X_ARROWS = 323;
 export const AVATAR_DISPLAY_X_NO_ARROWS = 303;
 export const AVATAR_DISPLAY_Y = 70;
+
+// Randomize button position (from AvatarEditorUi.as lines 127-128)
+export const RANDOMIZE_X = 307;
+export const RANDOMIZE_Y = 46;
+
+// Cloud animation bounds (from AvatarEditorUi.as lines 434-435)
+export const CLOUD_AREA_X = 305;
+export const CLOUD_AREA_WIDTH = 80;  // random(80) → range 305-385
+export const CLOUD_AREA_Y = 85;
+export const CLOUD_AREA_HEIGHT = 180; // random(180) → range 85-265
 
 export const DEFAULT_DIRECTION = 4;
 export const DEFAULT_SET_TYPE = 'hd';

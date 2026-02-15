@@ -1,20 +1,22 @@
 import { UIAssets } from './UIAssets';
 import { HitRegionManager } from './HitRegion';
 import { EventBus } from '../model/EditorState';
-import { LocalizationConfig, AVATAR_SCALE, AVATAR_CANVAS_WIDTH } from '../config';
+import { LocalizationConfig, RANDOMIZE_X, RANDOMIZE_Y, CLOUD_AREA_X, CLOUD_AREA_WIDTH, CLOUD_AREA_Y, CLOUD_AREA_HEIGHT } from '../config';
 
-const RANDOMIZE_Y = 46;
 const COOLDOWN_MS = 1000;
 
-// Cloud animation
-const CLOUD_DURATION_MS = 900;
-const CLOUD_SPAWN_WINDOW_MS = 300;
-const CLOUD_FADE_MS = 700;
-const CLOUD_SPAWN_CHANCE = 0.7;
-const CLOUD_SCALE_MIN = 0.8;
-const CLOUD_SCALE_RANGE = 1.5;
-const CLOUD_AREA_Y = 70;
-const CLOUD_AREA_HEIGHT = 200;
+// Cloud animation — matches original Flash AvatarEditorUi.as
+const CLOUD_DURATION_MS = 700;
+const CLOUD_SPAWN_WINDOW_MS = 350;
+const CLOUD_SPAWN_INTERVAL_MS = 40;
+const CLOUD_FRAME_INTERVAL_MS = 40;
+const CLOUD_FRAME_COUNT = 13;
+
+interface Cloud {
+  x: number;
+  y: number;
+  startTime: number;
+}
 
 export class RandomizeButton {
   private uiAssets: UIAssets;
@@ -27,17 +29,19 @@ export class RandomizeButton {
   private cooldownTimer: number | null = null;
 
   // Cloud animation state
-  private clouds: Array<{ x: number; y: number; alpha: number; startTime: number; scale: number }> = [];
+  private clouds: Cloud[] = [];
+  private cloudAnimationStart = 0;
   private cloudAnimationEnd = 0;
   private animating = false;
+  private cloudFrames: HTMLImageElement[] = [];
+  private nextSpawnIndex = 0;
 
   constructor(
     uiAssets: UIAssets,
     hitRegions: HitRegionManager,
     eventBus: EventBus,
     localization: LocalizationConfig,
-    displayX: number,
-    _canvasWidth: number
+    displayX: number
   ) {
     this.uiAssets = uiAssets;
     this.hitRegions = hitRegions;
@@ -51,8 +55,6 @@ export class RandomizeButton {
 
     const bg = this.uiAssets.get('randomizeButtonBg');
     if (bg) {
-      const avatarCenterX = this.displayX + (AVATAR_CANVAS_WIDTH * AVATAR_SCALE) / 2;
-      const RANDOMIZE_X = Math.round(avatarCenterX - bg.width / 2);
       ctx.drawImage(bg, RANDOMIZE_X, RANDOMIZE_Y);
 
       // Draw "Randomize" text centered on button
@@ -84,48 +86,39 @@ export class RandomizeButton {
     if (!this.animating) return;
 
     const now = Date.now();
+
+    // End animation
     if (now >= this.cloudAnimationEnd) {
       this.animating = false;
       this.clouds = [];
       return;
     }
 
-    // Spawn clouds densely over the avatar area
-    const elapsed = now - (this.cloudAnimationEnd - CLOUD_DURATION_MS);
-    if (elapsed < CLOUD_SPAWN_WINDOW_MS && Math.random() < CLOUD_SPAWN_CHANCE) {
-      const scale = CLOUD_SCALE_MIN + Math.random() * CLOUD_SCALE_RANGE;
-      const avatarW = AVATAR_CANVAS_WIDTH * AVATAR_SCALE;
-      this.clouds.push({
-        x: this.displayX + Math.random() * avatarW,
-        y: CLOUD_AREA_Y + Math.random() * CLOUD_AREA_HEIGHT,
-        alpha: 1,
-        startTime: now,
-        scale,
-      });
-    }
-
-    // Draw clouds with fading
-    const cloudImg = this.uiAssets.get('cloudAnimation');
-    ctx.save();
-    ctx.imageSmoothingEnabled = false;
-    for (const cloud of this.clouds) {
-      const age = now - cloud.startTime;
-      const alpha = Math.max(0, 1 - age / CLOUD_FADE_MS);
-      if (alpha <= 0) continue;
-
-      ctx.globalAlpha = alpha;
-      if (cloudImg) {
-        const w = cloudImg.width * cloud.scale;
-        const h = cloudImg.height * cloud.scale;
-        ctx.drawImage(cloudImg, cloud.x, cloud.y, w, h);
-      } else {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.arc(cloud.x + 10, cloud.y + 10, 10 * cloud.scale, 0, Math.PI * 2);
-        ctx.fill();
+    // Spawn clouds deterministically: one per CLOUD_SPAWN_INTERVAL_MS during spawn window
+    const elapsed = now - this.cloudAnimationStart;
+    if (elapsed < CLOUD_SPAWN_WINDOW_MS) {
+      const expectedCount = Math.floor(elapsed / CLOUD_SPAWN_INTERVAL_MS) + 1;
+      while (this.nextSpawnIndex < expectedCount) {
+        this.clouds.push({
+          x: CLOUD_AREA_X + Math.random() * CLOUD_AREA_WIDTH,
+          y: CLOUD_AREA_Y + Math.random() * CLOUD_AREA_HEIGHT,
+          startTime: now,
+        });
+        this.nextSpawnIndex++;
       }
     }
-    ctx.restore();
+
+    // Draw each cloud at its current frame
+    if (this.cloudFrames.length === 0) return;
+
+    for (const cloud of this.clouds) {
+      const frameIndex = Math.floor((now - cloud.startTime) / CLOUD_FRAME_INTERVAL_MS);
+      if (frameIndex >= CLOUD_FRAME_COUNT) continue;
+      const frame = this.cloudFrames[frameIndex];
+      if (frame) {
+        ctx.drawImage(frame, cloud.x, cloud.y);
+      }
+    }
   }
 
   isAnimating(): boolean {
@@ -141,10 +134,15 @@ export class RandomizeButton {
       this.cooldownTimer = null;
     }, COOLDOWN_MS);
 
+    // Cache cloud frames
+    this.cloudFrames = this.uiAssets.getCloudFrames();
+
     // Start cloud animation
     this.animating = true;
-    this.cloudAnimationEnd = Date.now() + CLOUD_DURATION_MS;
+    this.cloudAnimationStart = Date.now();
+    this.cloudAnimationEnd = this.cloudAnimationStart + CLOUD_DURATION_MS;
     this.clouds = [];
+    this.nextSpawnIndex = 0;
 
     this.eventBus.emit('randomizeAvatar');
   }
