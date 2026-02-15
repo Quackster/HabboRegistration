@@ -18,13 +18,13 @@ export function renderPreviewIcon(
 
   // Draw preview icon background (47x47)
   if (prevBg) {
-    ctx.drawImage(prevBg, x, y);
+    ctx.drawImage(prevBg, x + 11, y - 4);
   }
 
-  // Clip to mask area (33x33, centered within the 47x47 bg)
+  // Clip to mask area (33x33, offset to match original Flash mask position)
   ctx.save();
-  const clipX = x + 7;
-  const clipY = y + 7;
+  const clipX = x + 18;
+  const clipY = y + 3;
   const clipW = prevMask ? prevMask.width : 33;
   const clipH = prevMask ? prevMask.height : 33;
   ctx.beginPath();

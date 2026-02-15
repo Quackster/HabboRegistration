@@ -87,7 +87,7 @@ function rebuildHitRegions(partType: string): void {
     });
     // Right arrow
     addHitRegion({
-      x: baseX + COLOR_COLS * COLOR_CELL_SIZE + 4, y: baseY,
+      x: baseX + 122, y: baseY,
       width: 18, height: 29,
       id: `color_${partType}`,
       onClick: () => {
@@ -154,7 +154,7 @@ export function drawColorPalettes(ctx: CanvasRenderingContext2D): void {
     // Page arrows using original images
     if (p.colors.length > COLORS_PER_PAGE) {
       if (palArrowLeft) ctx.drawImage(palArrowLeft, baseX - 20, baseY);
-      if (palArrowRight) ctx.drawImage(palArrowRight, baseX + COLOR_COLS * COLOR_CELL_SIZE + 4, baseY);
+      if (palArrowRight) ctx.drawImage(palArrowRight, baseX + 122, baseY);
     }
   }
 }

@@ -13,7 +13,6 @@ import { drawBackground } from './ui/BackgroundPanel';
 import { setupGenderSelector, drawGenderSelector } from './ui/GenderSelector';
 import { drawAvatar, startAnimation, stopAnimation } from './ui/AvatarDisplay';
 import { setupRotationControls, drawRotationControls } from './ui/RotationControls';
-import { setupAnimationControls, drawAnimationControls } from './ui/AnimationControls';
 import { setupPartNavigator, drawPartNavigator } from './ui/PartNavigator';
 import { setupColorPalette, setColors, drawColorPalettes } from './ui/ColorPalette';
 import { setupRandomizeButton, drawRandomizeButton } from './ui/RandomizeButton';
@@ -70,14 +69,6 @@ async function init() {
     requestRedrawAll();
   });
 
-  setupAnimationControls((action) => {
-    stopAnimation();
-    state.setAction(action);
-    renderer.preloadCurrentSprites(state.direction, state.currentAction);
-    if (action === 'wlk') startAnimation();
-    requestRedrawAll();
-  });
-
   setupPartNavigator((partType, dir) => {
     navigatePart(partType, dir);
   });
@@ -114,7 +105,6 @@ async function init() {
     drawPartNavigator(ctx);
     drawColorPalettes(ctx);
     drawRotationControls(ctx);
-    drawAnimationControls(ctx);
     drawRandomizeButton(ctx);
     drawContinueButton(ctx);
   });

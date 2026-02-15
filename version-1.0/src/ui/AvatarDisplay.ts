@@ -1,4 +1,4 @@
-import { AVATAR_X, AVATAR_Y, ANIMATION_INTERVAL } from '../config';
+import { AVATAR_X, AVATAR_Y, AVATAR_SCALE, ANIMATION_INTERVAL } from '../config';
 import * as state from '../model/EditorState';
 import * as renderer from '../rendering/AvatarRenderer';
 
@@ -11,7 +11,8 @@ export function drawAvatar(ctx: CanvasRenderingContext2D): void {
     AVATAR_Y,
     state.direction,
     state.currentAction,
-    state.animationFrame
+    state.animationFrame,
+    AVATAR_SCALE
   );
 }
 

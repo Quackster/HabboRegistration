@@ -5,6 +5,7 @@ export const CANVAS_HEIGHT = 327;
 // Avatar rendering
 export const AVATAR_X = 104;
 export const AVATAR_Y = 226;
+export const AVATAR_SCALE = 2;
 export const FLIP_WIDTH = 68;
 export const FLIP_LIST = [0, 1, 2, 3, 2, 1, 0, 7];
 
