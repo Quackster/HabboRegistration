@@ -111,6 +111,8 @@ export class RandomizeButton {
     // Draw each cloud at its current frame
     if (this.cloudFrames.length === 0) return;
 
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
     for (const cloud of this.clouds) {
       const frameIndex = Math.floor((now - cloud.startTime) / CLOUD_FRAME_INTERVAL_MS);
       if (frameIndex >= CLOUD_FRAME_COUNT) continue;
@@ -119,6 +121,7 @@ export class RandomizeButton {
         ctx.drawImage(frame, cloud.x, cloud.y);
       }
     }
+    ctx.restore();
   }
 
   isAnimating(): boolean {
