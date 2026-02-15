@@ -1,4 +1,4 @@
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from '../config';
+import { CANVAS_HEIGHT } from '../config';
 import { HitRegionManager } from './HitRegion';
 
 export class CanvasManager {
@@ -8,12 +8,14 @@ export class CanvasManager {
   private drawCallback: (() => void) | null = null;
   private animationFrameId: number | null = null;
   private needsRedraw = true;
+  private canvasWidth: number;
 
-  constructor(container: HTMLElement, hitRegions: HitRegionManager) {
+  constructor(container: HTMLElement, hitRegions: HitRegionManager, width: number) {
     this.hitRegions = hitRegions;
+    this.canvasWidth = width;
 
     this.canvas = document.createElement('canvas');
-    this.canvas.width = CANVAS_WIDTH;
+    this.canvas.width = width;
     this.canvas.height = CANVAS_HEIGHT;
     this.canvas.style.display = 'block';
     this.ctx = this.canvas.getContext('2d')!;
@@ -62,12 +64,12 @@ export class CanvasManager {
   private clear(): void {
     // Flash stage background is white
     this.ctx.fillStyle = '#FFFFFF';
-    this.ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    this.ctx.fillRect(0, 0, this.canvasWidth, CANVAS_HEIGHT);
   }
 
   private getCanvasCoords(e: MouseEvent): { x: number; y: number } {
     const rect = this.canvas.getBoundingClientRect();
-    const scaleX = CANVAS_WIDTH / rect.width;
+    const scaleX = this.canvasWidth / rect.width;
     const scaleY = CANVAS_HEIGHT / rect.height;
     return {
       x: (e.clientX - rect.left) * scaleX,

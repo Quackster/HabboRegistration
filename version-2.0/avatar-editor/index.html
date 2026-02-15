@@ -44,6 +44,15 @@
         console.log('HabboEditor.showOldFigureNotice');
       }
     };
+
+    // Editor config — omit figure/gender to get a random avatar on load
+    window.HabboEditorConfig = {
+      // figure: 'hd-180-1.ch-215-82.lg-270-82',
+      // gender: 'M',
+      userHasClub: false,
+      showClubSelections: true,
+      assetsPath: '',
+    };
   </script>
   <script type="module" src="/src/index.ts"></script>
 </body>

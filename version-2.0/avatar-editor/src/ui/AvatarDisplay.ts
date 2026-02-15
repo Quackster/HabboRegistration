@@ -3,13 +3,15 @@ import { HitRegionManager } from './HitRegion';
 import { EventBus } from '../model/EditorState';
 import { Figure } from '../model/Figure';
 import { AvatarRenderer } from '../rendering/AvatarRenderer';
-import { AVATAR_DISPLAY_X, AVATAR_DISPLAY_Y, AVATAR_SCALE } from '../config';
+import { AVATAR_DISPLAY_Y, AVATAR_SCALE } from '../config';
 
 export class AvatarDisplay {
   private uiAssets: UIAssets;
   private hitRegions: HitRegionManager;
   private eventBus: EventBus;
   private avatarRenderer: AvatarRenderer;
+  private showArrows: boolean;
+  private displayX: number;
 
   private direction: number;
   private figure: Figure;
@@ -20,7 +22,9 @@ export class AvatarDisplay {
     eventBus: EventBus,
     avatarRenderer: AvatarRenderer,
     figure: Figure,
-    direction: number
+    direction: number,
+    showArrows: boolean,
+    displayX: number
   ) {
     this.uiAssets = uiAssets;
     this.hitRegions = hitRegions;
@@ -28,6 +32,8 @@ export class AvatarDisplay {
     this.avatarRenderer = avatarRenderer;
     this.figure = figure;
     this.direction = direction;
+    this.showArrows = showArrows;
+    this.displayX = displayX;
   }
 
   setFigure(figure: Figure): void {
@@ -58,7 +64,7 @@ export class AvatarDisplay {
     // Draw floor tile
     const floorTile = this.uiAssets.get('floorTile');
     if (floorTile) {
-      ctx.drawImage(floorTile, AVATAR_DISPLAY_X + 5, AVATAR_DISPLAY_Y + 165);
+      ctx.drawImage(floorTile, this.displayX + 5, AVATAR_DISPLAY_Y + 165);
     }
 
     // Draw avatar
@@ -66,49 +72,51 @@ export class AvatarDisplay {
       ctx,
       this.figure,
       this.direction,
-      AVATAR_DISPLAY_X,
+      this.displayX,
       AVATAR_DISPLAY_Y,
       AVATAR_SCALE
     );
 
-    // Draw rotation arrows
-    const leftArrow = this.uiAssets.get('rotateArrowLeft');
-    const rightArrow = this.uiAssets.get('rotateArrowRight');
+    // Draw rotation arrows (if enabled)
+    if (this.showArrows) {
+      const leftArrow = this.uiAssets.get('rotateArrowLeft');
+      const rightArrow = this.uiAssets.get('rotateArrowRight');
 
-    const arrowY = AVATAR_DISPLAY_Y + 100;
+      const arrowY = AVATAR_DISPLAY_Y + 100;
 
-    if (leftArrow) {
-      const lx = AVATAR_DISPLAY_X - 20;
-      ctx.drawImage(leftArrow, lx, arrowY);
-      this.hitRegions.add({
-        id: 'avatar_rotateLeft',
-        x: lx,
-        y: arrowY,
-        width: leftArrow.width,
-        height: leftArrow.height,
-        cursor: 'pointer',
-        onClick: () => {
-          this.rotateNext();
-          this.eventBus.emit('stateChanged');
-        },
-      });
-    }
+      if (leftArrow) {
+        const lx = this.displayX - 20;
+        ctx.drawImage(leftArrow, lx, arrowY);
+        this.hitRegions.add({
+          id: 'avatar_rotateLeft',
+          x: lx,
+          y: arrowY,
+          width: leftArrow.width,
+          height: leftArrow.height,
+          cursor: 'pointer',
+          onClick: () => {
+            this.rotateNext();
+            this.eventBus.emit('stateChanged');
+          },
+        });
+      }
 
-    if (rightArrow) {
-      const rx = AVATAR_DISPLAY_X + 128 + 10;
-      ctx.drawImage(rightArrow, rx, arrowY);
-      this.hitRegions.add({
-        id: 'avatar_rotateRight',
-        x: rx,
-        y: arrowY,
-        width: rightArrow.width,
-        height: rightArrow.height,
-        cursor: 'pointer',
-        onClick: () => {
-          this.rotatePrev();
-          this.eventBus.emit('stateChanged');
-        },
-      });
+      if (rightArrow) {
+        const rx = this.displayX + 128 + 10;
+        ctx.drawImage(rightArrow, rx, arrowY);
+        this.hitRegions.add({
+          id: 'avatar_rotateRight',
+          x: rx,
+          y: arrowY,
+          width: rightArrow.width,
+          height: rightArrow.height,
+          cursor: 'pointer',
+          onClick: () => {
+            this.rotatePrev();
+            this.eventBus.emit('stateChanged');
+          },
+        });
+      }
     }
   }
 }

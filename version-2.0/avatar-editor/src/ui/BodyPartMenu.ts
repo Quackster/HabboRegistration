@@ -277,11 +277,11 @@ export class BodyPartMenu {
       }
     }
 
-    // Draw HC tag if club item
+    // Draw HC tag if club item (bottom-right corner inside cell)
     if (set.isClubOnly()) {
       const hcTag = this.uiAssets.get('hcTagSmall');
       if (hcTag) {
-        ctx.drawImage(hcTag, x + 41, y + 25);
+        ctx.drawImage(hcTag, x + ITEM_SIZE - hcTag.width - 1, y + ITEM_SIZE - hcTag.height - 1);
       }
     }
   }

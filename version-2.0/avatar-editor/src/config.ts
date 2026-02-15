@@ -3,6 +3,7 @@ export interface EditorConfig {
   gender: string;
   userHasClub: boolean;
   showClubSelections: boolean;
+  showRotationArrows: boolean;
   assetsPath: string;
   menuState?: string;
   localization: LocalizationConfig;
@@ -19,6 +20,7 @@ export const DEFAULT_CONFIG: EditorConfig = {
   gender: 'U',
   userHasClub: false,
   showClubSelections: true,
+  showRotationArrows: false,
   assetsPath: '',
   localization: {
     randomize: 'Randomize',
@@ -27,7 +29,8 @@ export const DEFAULT_CONFIG: EditorConfig = {
   },
 };
 
-export const CANVAS_WIDTH = 495;
+export const CANVAS_WIDTH_WITH_ARROWS = 495;
+export const CANVAS_WIDTH_NO_ARROWS = 440; // 303 + 5 + 130 (floor tile) + 2px margin
 export const CANVAS_HEIGHT = 400; // Flash stage is 435x400 (confirmed from FFDEC frame exports)
 
 export const AVATAR_CANVAS_WIDTH = 64;
@@ -37,7 +40,8 @@ export const AVATAR_CANVAS_OFFSET_Y = -8; // translates to height + offset = 106
 
 export const FLIP_WIDTH = 68;
 export const AVATAR_SCALE = 2;
-export const AVATAR_DISPLAY_X = 323;
+export const AVATAR_DISPLAY_X_ARROWS = 323;
+export const AVATAR_DISPLAY_X_NO_ARROWS = 303;
 export const AVATAR_DISPLAY_Y = 70;
 
 export const DEFAULT_DIRECTION = 4;

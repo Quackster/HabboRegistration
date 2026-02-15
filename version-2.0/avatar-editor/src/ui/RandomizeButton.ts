@@ -1,7 +1,7 @@
 import { UIAssets } from './UIAssets';
 import { HitRegionManager } from './HitRegion';
 import { EventBus } from '../model/EditorState';
-import { LocalizationConfig, AVATAR_DISPLAY_X, AVATAR_SCALE, AVATAR_CANVAS_WIDTH } from '../config';
+import { LocalizationConfig, AVATAR_SCALE, AVATAR_CANVAS_WIDTH } from '../config';
 
 const RANDOMIZE_Y = 46;
 const COOLDOWN_MS = 1000;
@@ -11,6 +11,7 @@ export class RandomizeButton {
   private hitRegions: HitRegionManager;
   private eventBus: EventBus;
   private localization: LocalizationConfig;
+  private displayX: number;
 
   private enabled = true;
   private cooldownTimer: number | null = null;
@@ -24,12 +25,14 @@ export class RandomizeButton {
     uiAssets: UIAssets,
     hitRegions: HitRegionManager,
     eventBus: EventBus,
-    localization: LocalizationConfig
+    localization: LocalizationConfig,
+    displayX: number
   ) {
     this.uiAssets = uiAssets;
     this.hitRegions = hitRegions;
     this.eventBus = eventBus;
     this.localization = localization;
+    this.displayX = displayX;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -37,7 +40,7 @@ export class RandomizeButton {
 
     const bg = this.uiAssets.get('randomizeButtonBg');
     if (bg) {
-      const avatarCenterX = AVATAR_DISPLAY_X + (AVATAR_CANVAS_WIDTH * AVATAR_SCALE) / 2;
+      const avatarCenterX = this.displayX + (AVATAR_CANVAS_WIDTH * AVATAR_SCALE) / 2;
       const RANDOMIZE_X = Math.round(avatarCenterX - bg.width / 2);
       ctx.drawImage(bg, RANDOMIZE_X, RANDOMIZE_Y);
 
@@ -80,7 +83,7 @@ export class RandomizeButton {
     const elapsed = now - (this.cloudAnimationEnd - 700);
     if (elapsed < 350 && Math.random() < 0.3) {
       this.clouds.push({
-        x: 325 + Math.random() * 80,
+        x: this.displayX + 2 + Math.random() * 80,
         y: 85 + Math.random() * 180,
         alpha: 1,
         startTime: now,

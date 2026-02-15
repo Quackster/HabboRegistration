@@ -1,4 +1,4 @@
-import { EditorConfig, DEFAULT_CONFIG, DEFAULT_SET_TYPE, MAIN_MENU_STRUCT } from './config';
+import { EditorConfig, DEFAULT_CONFIG, DEFAULT_SET_TYPE, MAIN_MENU_STRUCT, CANVAS_WIDTH_WITH_ARROWS, CANVAS_WIDTH_NO_ARROWS, AVATAR_DISPLAY_X_ARROWS, AVATAR_DISPLAY_X_NO_ARROWS } from './config';
 import { FigureData } from './data/FigureData';
 import { DrawOrder } from './data/DrawOrder';
 import { SymbolMap } from './data/SymbolMap';
@@ -124,7 +124,10 @@ export class HabboAvatarEditor {
   }
 
   private createUI(): void {
-    this.canvasManager = new CanvasManager(this.container, this.hitRegions);
+    const showArrows = this.config.showRotationArrows;
+    const canvasWidth = showArrows ? CANVAS_WIDTH_WITH_ARROWS : CANVAS_WIDTH_NO_ARROWS;
+    const avatarDisplayX = showArrows ? AVATAR_DISPLAY_X_ARROWS : AVATAR_DISPLAY_X_NO_ARROWS;
+    this.canvasManager = new CanvasManager(this.container, this.hitRegions, canvasWidth);
 
     // Main menu
     this.mainMenu = new MainMenu(
@@ -168,7 +171,9 @@ export class HabboAvatarEditor {
       this.state.eventBus,
       this.avatarRenderer,
       this.state.figure,
-      this.state.avatarDirection
+      this.state.avatarDirection,
+      showArrows,
+      avatarDisplayX
     );
 
     // Randomize button
@@ -176,7 +181,8 @@ export class HabboAvatarEditor {
       this.uiAssets,
       this.hitRegions,
       this.state.eventBus,
-      this.config.localization
+      this.config.localization,
+      avatarDisplayX
     );
 
     // Wire events
@@ -507,18 +513,30 @@ export class HabboAvatarEditor {
     ctx.fillStyle = '#E5E3E1';
     ctx.fill();
 
-    // --- Yellow border (no notch — flat bottom) ---
+    // --- Yellow border (no notch — flat bottom, gap for selected tab) ---
+    const selectedTabIndex = this.mainMenu.getMenuMainOpenedIndex();
+    const tabX = 18 + selectedTabIndex * 65; // MAIN_OFFSET_X + index * (MAIN_ITEM_WIDTH + MAIN_ITEM_MARGIN)
+    const tabW = 60; // MAIN_ITEM_WIDTH
+
     ctx.beginPath();
-    ctx.moveTo(yx + r, yy);
+    // Start at left edge, just below top-left corner
+    ctx.moveTo(yx, yy + r);
+    ctx.arcTo(yx, yy, yx + r, yy, r);
+    // Top edge left of selected tab
+    ctx.lineTo(tabX, yy);
+    // Gap: move across selected tab without drawing
+    ctx.moveTo(tabX + tabW, yy);
+    // Top edge right of selected tab → top-right corner
     ctx.lineTo(yx + yw - r, yy);
     ctx.arcTo(yx + yw, yy, yx + yw, yy + r, r);
+    // Right edge → bottom-right corner
     ctx.lineTo(yx + yw, yBottom - r);
     ctx.arcTo(yx + yw, yBottom, yx + yw - r, yBottom, r);
+    // Bottom edge → bottom-left corner
     ctx.lineTo(yx + r, yBottom);
     ctx.arcTo(yx, yBottom, yx, yBottom - r, r);
+    // Left edge back up
     ctx.lineTo(yx, yy + r);
-    ctx.arcTo(yx, yy, yx + r, yy, r);
-    ctx.closePath();
     ctx.strokeStyle = '#FFCC00';
     ctx.lineWidth = 3;
     ctx.stroke();
@@ -604,14 +622,9 @@ declare global {
 
 window.HabboAvatarEditor = HabboAvatarEditor;
 
-// Auto-init for development
+// Auto-init: reads config from window.HabboEditorConfig if present
 const container = document.getElementById('editor-container');
 if (container) {
-  new HabboAvatarEditor(container, {
-    figure: 'hd-180-1.ch-215-82.lg-270-82',
-    gender: 'M',
-    userHasClub: false,
-    showClubSelections: true,
-    assetsPath: '',
-  });
+  const cfg = (window as any).HabboEditorConfig || {};
+  new HabboAvatarEditor(container, cfg);
 }
