@@ -126,6 +126,8 @@ export class MainMenu {
         if (selected) {
           const bg = this.uiAssets.get('mainMenuSubGenderSelectedBg');
           if (bg) ctx.drawImage(bg, locX, locY);
+        } else {
+          this.drawSubUnselectedBg(ctx, locX, locY, SUB_ITEM_GENDER_WIDTH, 35);
         }
 
         const icon = this.uiAssets.get(`mainMenuSub_${itemId}`);
@@ -158,6 +160,8 @@ export class MainMenu {
         if (selected) {
           const bg = this.uiAssets.get('mainMenuSubSelectedBg');
           if (bg) ctx.drawImage(bg, locX, locY);
+        } else {
+          this.drawSubUnselectedBg(ctx, locX, locY, SUB_ITEM_WIDTH, 40);
         }
 
         const icon = this.uiAssets.get(`mainMenuSub_${itemId}`);
@@ -176,6 +180,26 @@ export class MainMenu {
         });
       }
     }
+  }
+
+  private drawSubUnselectedBg(
+    ctx: CanvasRenderingContext2D,
+    x: number, y: number, w: number, h: number
+  ): void {
+    const r = 6;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
+    ctx.fillStyle = '#CCCCCC';
+    ctx.fill();
   }
 
   private mainItemClicked(index: number): void {
