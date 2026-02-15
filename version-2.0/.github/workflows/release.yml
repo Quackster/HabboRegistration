@@ -20,14 +20,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: avatar-editor/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('avatar-editor/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: 'npm'
+          cache-dependency-path: avatar-editor/package-lock.json
 
       - name: Install dependencies
         working-directory: ./avatar-editor
