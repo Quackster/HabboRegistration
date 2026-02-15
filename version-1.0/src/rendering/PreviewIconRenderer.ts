@@ -47,8 +47,8 @@ export function renderPreviewIcon(
       continue;
     }
 
-    const drawX = x - spriteInfo.offsetX;
-    const drawY = y - spriteInfo.offsetY + offsetY;
+    const drawX = x + spriteInfo.offsetX;
+    const drawY = y + spriteInfo.offsetY + offsetY;
 
     if (partName === 'ey') {
       ctx.drawImage(img, drawX, drawY);

@@ -76,6 +76,7 @@ export function render(
   const isFlipped = direction !== flipDir;
 
   ctx.save();
+  ctx.imageSmoothingEnabled = false;
 
   if (isFlipped) {
     // Mirror horizontally around the avatar center
@@ -103,8 +104,8 @@ export function render(
       continue;
     }
 
-    const drawX = -spriteInfo.offsetX;
-    const drawY = -spriteInfo.offsetY;
+    const drawX = spriteInfo.offsetX;
+    const drawY = spriteInfo.offsetY;
 
     // Apply color tint (skip eyes)
     if (partName === 'ey') {
@@ -126,6 +127,7 @@ export function renderPreview(
 ): void {
   // Render parts belonging to this main part in std/dir2 for preview
   ctx.save();
+  ctx.imageSmoothingEnabled = false;
   ctx.scale(scale, scale);
 
   for (const partName of RENDER_ORDER) {
@@ -140,8 +142,8 @@ export function renderPreview(
     const img = getSpriteSync(spriteInfo.imageId);
     if (!img) continue;
 
-    const drawX = -spriteInfo.offsetX;
-    const drawY = -spriteInfo.offsetY + offsetY;
+    const drawX = spriteInfo.offsetX;
+    const drawY = spriteInfo.offsetY + offsetY;
 
     if (partName === 'ey') {
       ctx.drawImage(img, drawX, drawY);
