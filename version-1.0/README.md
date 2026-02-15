@@ -2,6 +2,10 @@
 
 TypeScript and HTML Canvas replacement for the Flash-based `HabboRegistration.swf` (v38, 2007) avatar editor. Renders entirely on a `<canvas>` element with no Flash dependency.
 
+# Screenshot 
+
+<img width="406" height="327" alt="image" src="https://github.com/user-attachments/assets/51e02526-9b62-4c62-bf77-c049ea9a5638" />
+
 ## Requirements
 
 - Node.js 18+
