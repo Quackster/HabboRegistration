@@ -2,7 +2,8 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from
 import { join, resolve } from 'path';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const DECOMPILED = join(ROOT, 'decompiled');
+const VERSION_ROOT = resolve(ROOT, '..');
+const DECOMPILED = join(VERSION_ROOT, 'decompiled');
 const ASSETS = join(ROOT, 'assets');
 
 function main() {
@@ -74,11 +75,11 @@ function main() {
     join(ASSETS, 'data', 'symbols.csv')
   );
   copyFileSync(
-    join(ROOT, 'figure_data_xml.xml'),
+    join(VERSION_ROOT, 'figure_data_xml.xml'),
     join(ASSETS, 'data', 'figure_data_xml.xml')
   );
   copyFileSync(
-    join(ROOT, 'figure_editor.xml'),
+    join(VERSION_ROOT, 'figure_editor.xml'),
     join(ASSETS, 'data', 'figure_editor.xml')
   );
   console.log('Copied data files (symbols.csv, figure_data_xml.xml, figure_editor.xml)');

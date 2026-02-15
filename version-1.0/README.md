@@ -14,17 +14,17 @@ TypeScript and HTML Canvas replacement for the Flash-based `HabboRegistration.sw
 ## Building
 
 ```
-cd version-1.0
+cd avatar-editor
 npm install
 npm run build
 ```
 
-This runs the TypeScript compiler followed by a Vite IIFE build. Output goes to `dist/habbo-registration.iife.js` (roughly 14KB).
+This runs the TypeScript compiler followed by a Vite IIFE build. Output goes to `avatar-editor/dist/habbo-registration.iife.js` (roughly 14KB).
 
 For local development with hot reload:
 
 ```
-cd version-1.0
+cd avatar-editor
 npm run dev
 ```
 
@@ -38,11 +38,11 @@ Sprites and UI assets are extracted from the decompiled SWF via a bundled script
 npm run extract
 ```
 
-This reads from `decompiled/` (FFDEC output) and writes to `assets/`. You only need to run this once, or again if the decompiled source changes.
+This reads from `decompiled/` (FFDEC output in the version-1.0 root) and writes to `avatar-editor/assets/`. You only need to run this once, or again if the decompiled source changes.
 
 ## Assets
 
-The build copies `assets/` into `dist/`. This folder contains:
+The build copies `avatar-editor/assets/` into `dist/`. This folder contains:
 
 - `data/figure_data_xml.xml` - part/set/colour definitions (original v38 format)
 - `data/figure_editor.xml` - localisation strings
@@ -112,41 +112,42 @@ The `setGenderAndFigure` callback is the primary way to get the figure string. I
 
 ```
 version-1.0/
-  src/
-    index.ts                  - Entry point, init, render loop
-    config.ts                 - Layout constants and part definitions
-    api/
-      Bridge.ts               - window.HabboRegistration callback wrapper
-    data/
-      FigureData.ts           - Parses figure_data_xml.xml (parts, sets, palettes)
-      Localization.ts         - Parses figure_editor.xml (UI strings)
-      SymbolMap.ts            - Parses symbols.csv and spriteoffsets.csv
-    model/
-      EditorState.ts          - Shared editor state and event bus
-      FigureString.ts         - Numeric figure string parsing and encoding
-    rendering/
-      AvatarRenderer.ts       - Full avatar rendering (all parts, directions, flipping)
-      PreviewIconRenderer.ts  - Small preview icon rendering for the part navigator
-      SpriteLoader.ts         - PNG sprite loading and caching
-      ColorTint.ts            - Pixel-level colour multiplication
-      UIAssets.ts             - UI image loading from decompiled SWF assets
-    ui/
-      CanvasManager.ts        - Canvas setup, input handling, render loop
-      BackgroundPanel.ts      - Editor background panel
-      GenderSelector.ts       - Boy/girl radio buttons
-      AvatarDisplay.ts        - Avatar preview with rotation
-      RotationControls.ts     - Left/right rotation arrows
-      AnimationControls.ts    - Action/animation controls
-      PartNavigator.ts        - Part selection arrows and preview icons
-      ColorPalette.ts         - Colour palette grid with paging
-      RandomizeButton.ts      - Randomise button
-      ContinueButton.ts       - Continue/proceed button
-      HitRegion.ts            - Click/hover region management
-  scripts/
-    extract-assets.ts         - Extracts sprites and data from decompiled SWF
-  assets/                     - Runtime assets (copied to dist on build)
-  decompiled/                 - FFDEC decompiled SWF output
-  dist/                       - Build output
+  avatar-editor/
+    src/
+      index.ts                  - Entry point, init, render loop
+      config.ts                 - Layout constants and part definitions
+      api/
+        Bridge.ts               - window.HabboRegistration callback wrapper
+      data/
+        FigureData.ts           - Parses figure_data_xml.xml (parts, sets, palettes)
+        Localization.ts         - Parses figure_editor.xml (UI strings)
+        SymbolMap.ts            - Parses symbols.csv and spriteoffsets.csv
+      model/
+        EditorState.ts          - Shared editor state and event bus
+        FigureString.ts         - Numeric figure string parsing and encoding
+      rendering/
+        AvatarRenderer.ts       - Full avatar rendering (all parts, directions, flipping)
+        PreviewIconRenderer.ts  - Small preview icon rendering for the part navigator
+        SpriteLoader.ts         - PNG sprite loading and caching
+        ColorTint.ts            - Pixel-level colour multiplication
+        UIAssets.ts             - UI image loading from decompiled SWF assets
+      ui/
+        CanvasManager.ts        - Canvas setup, input handling, render loop
+        BackgroundPanel.ts      - Editor background panel
+        GenderSelector.ts       - Boy/girl radio buttons
+        AvatarDisplay.ts        - Avatar preview with rotation
+        RotationControls.ts     - Left/right rotation arrows
+        AnimationControls.ts    - Action/animation controls
+        PartNavigator.ts        - Part selection arrows and preview icons
+        ColorPalette.ts         - Colour palette grid with paging
+        RandomizeButton.ts      - Randomise button
+        ContinueButton.ts       - Continue/proceed button
+        HitRegion.ts            - Click/hover region management
+    scripts/
+      extract-assets.ts         - Extracts sprites and data from decompiled SWF
+    assets/                     - Runtime assets (copied to dist on build)
+    dist/                       - Build output
+  decompiled/                   - FFDEC decompiled SWF output
 ```
 
 ## Origin

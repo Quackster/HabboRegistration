@@ -1,4 +1,4 @@
-import { DEFAULT_FIGURE, DEFAULT_GENDER, PART_TYPES, PREVIEW_X, PREVIEW_START_Y, PREVIEW_SPACING } from './config';
+import { PART_TYPES, PREVIEW_X, PREVIEW_START_Y, PREVIEW_SPACING } from './config';
 import { loadSymbolMap } from './data/SymbolMap';
 import { loadFigureData, getPartAndColor, getPartsAndIndexes, getAllPartColors, getPartNumber, getPartIndexByNumber } from './data/FigureData';
 import { loadLocalization } from './data/Localization';
@@ -43,18 +43,19 @@ async function init() {
   // Phase 3: Set initial look
   let figure = config.figure;
   let genderCode = config.gender;
-  if (figure.length !== 25 || (genderCode !== 'M' && genderCode !== 'F')) {
-    figure = DEFAULT_FIGURE;
-    genderCode = DEFAULT_GENDER;
-  }
+  const hasExplicitConfig = !!(config.rawFigure && config.rawGender);
 
-  state.setGender(genderCode === 'M' ? 'male' : 'female');
-
-  if (!setInitialLook(figure, genderCode)) {
-    figure = DEFAULT_FIGURE;
-    genderCode = DEFAULT_GENDER;
-    state.setGender('male');
-    setInitialLook(figure, genderCode);
+  if (hasExplicitConfig && figure.length === 25 && (genderCode === 'M' || genderCode === 'F')) {
+    state.setGender(genderCode === 'M' ? 'male' : 'female');
+    if (!setInitialLook(figure, genderCode)) {
+      // Provided config was invalid, randomize instead
+      state.setGender(Math.random() < 0.5 ? 'male' : 'female');
+      randomizeAll();
+    }
+  } else {
+    // No config provided — start with a random look and gender
+    state.setGender(Math.random() < 0.5 ? 'male' : 'female');
+    randomizeAll();
   }
 
   // Phase 4: Setup UI interactions
@@ -112,7 +113,7 @@ async function init() {
   startRenderLoop();
 
   // Send initial figure to parent
-  sendFigure(state.getGenderCode(), figure);
+  sendCurrentFigure();
 }
 
 function requestRedrawAll(): void {
@@ -144,7 +145,7 @@ function setInitialLook(figure: string, genderCode: string): boolean {
 }
 
 function setPartsFromData(mainPart: string, dir: string): void {
-  const ps = state.partState[mainPart];
+  const ps = state.partState[mainPart] || [0, 0];
   const colorIdx = mainPart !== 'hd' ? 0 : ps[1];
   const result = getPartsAndIndexes(state.chosenGender, mainPart, dir, ps[0], colorIdx);
   if (!result) return;

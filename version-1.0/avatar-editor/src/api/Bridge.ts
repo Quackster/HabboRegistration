@@ -17,8 +17,10 @@ declare global {
 export function getConfig() {
   const cfg = window.HabboRegistrationConfig || {};
   return {
-    figure: cfg.figure || '1750118022210132810129003',
-    gender: cfg.gender || 'M',
+    figure: cfg.figure || '',
+    gender: cfg.gender || '',
+    rawFigure: cfg.figure,
+    rawGender: cfg.gender,
     assetsPath: cfg.assetsPath || './',
     figuredataUrl: cfg.figuredata_url || 'figure_data_xml.xml',
     localizationUrl: cfg.localization_url || 'figure_editor.xml',
