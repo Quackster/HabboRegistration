@@ -289,7 +289,7 @@ export class BodyPartMenu {
   private drawRemoveItem(ctx: CanvasRenderingContext2D, x: number, y: number, selected: boolean): void {
     const removeIcon = this.uiAssets.get('partRemove');
     if (removeIcon) {
-      ctx.drawImage(removeIcon, x + 6, y + 6);
+      ctx.drawImage(removeIcon, x, y);
     }
 
     // Draw selection highlight (grey border) for currently selected item

@@ -496,7 +496,7 @@ export class HabboAvatarEditor {
 
     // --- Grey sub-menu bar behind yellow border ---
     const subBarY = 50;
-    const subBarH = 40;
+    const subBarH = 36; // Part type height (40px) - 4px
     ctx.beginPath();
     ctx.moveTo(yx + r, subBarY);
     ctx.lineTo(yx + yw - r, subBarY);
