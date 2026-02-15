@@ -6,6 +6,16 @@ import { LocalizationConfig, AVATAR_SCALE, AVATAR_CANVAS_WIDTH } from '../config
 const RANDOMIZE_Y = 46;
 const COOLDOWN_MS = 1000;
 
+// Cloud animation
+const CLOUD_DURATION_MS = 900;
+const CLOUD_SPAWN_WINDOW_MS = 300;
+const CLOUD_FADE_MS = 700;
+const CLOUD_SPAWN_CHANCE = 0.7;
+const CLOUD_SCALE_MIN = 0.8;
+const CLOUD_SCALE_RANGE = 1.5;
+const CLOUD_AREA_Y = 70;
+const CLOUD_AREA_HEIGHT = 200;
+
 export class RandomizeButton {
   private uiAssets: UIAssets;
   private hitRegions: HitRegionManager;
@@ -26,7 +36,8 @@ export class RandomizeButton {
     hitRegions: HitRegionManager,
     eventBus: EventBus,
     localization: LocalizationConfig,
-    displayX: number
+    displayX: number,
+    _canvasWidth: number
   ) {
     this.uiAssets = uiAssets;
     this.hitRegions = hitRegions;
@@ -79,25 +90,27 @@ export class RandomizeButton {
       return;
     }
 
-    // Spawn new clouds in the first half of animation
-    const elapsed = now - (this.cloudAnimationEnd - 700);
-    if (elapsed < 350 && Math.random() < 0.3) {
+    // Spawn clouds densely over the avatar area
+    const elapsed = now - (this.cloudAnimationEnd - CLOUD_DURATION_MS);
+    if (elapsed < CLOUD_SPAWN_WINDOW_MS && Math.random() < CLOUD_SPAWN_CHANCE) {
+      const scale = CLOUD_SCALE_MIN + Math.random() * CLOUD_SCALE_RANGE;
+      const avatarW = AVATAR_CANVAS_WIDTH * AVATAR_SCALE;
       this.clouds.push({
-        x: this.displayX + 2 + Math.random() * 80,
-        y: 85 + Math.random() * 180,
+        x: this.displayX + Math.random() * avatarW,
+        y: CLOUD_AREA_Y + Math.random() * CLOUD_AREA_HEIGHT,
         alpha: 1,
         startTime: now,
-        scale: 0.5 + Math.random() * 1.5,
+        scale,
       });
     }
 
-    // Draw clouds with fading and random sizes
+    // Draw clouds with fading
     const cloudImg = this.uiAssets.get('cloudAnimation');
     ctx.save();
     ctx.imageSmoothingEnabled = false;
     for (const cloud of this.clouds) {
       const age = now - cloud.startTime;
-      const alpha = Math.max(0, 1 - age / 500);
+      const alpha = Math.max(0, 1 - age / CLOUD_FADE_MS);
       if (alpha <= 0) continue;
 
       ctx.globalAlpha = alpha;
@@ -106,7 +119,6 @@ export class RandomizeButton {
         const h = cloudImg.height * cloud.scale;
         ctx.drawImage(cloudImg, cloud.x, cloud.y, w, h);
       } else {
-        // Fallback cloud
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.arc(cloud.x + 10, cloud.y + 10, 10 * cloud.scale, 0, Math.PI * 2);
@@ -131,7 +143,7 @@ export class RandomizeButton {
 
     // Start cloud animation
     this.animating = true;
-    this.cloudAnimationEnd = Date.now() + 700;
+    this.cloudAnimationEnd = Date.now() + CLOUD_DURATION_MS;
     this.clouds = [];
 
     this.eventBus.emit('randomizeAvatar');

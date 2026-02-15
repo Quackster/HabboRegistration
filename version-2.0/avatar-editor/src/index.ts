@@ -182,7 +182,8 @@ export class HabboAvatarEditor {
       this.hitRegions,
       this.state.eventBus,
       this.config.localization,
-      avatarDisplayX
+      avatarDisplayX,
+      canvasWidth
     );
 
     // Wire events
