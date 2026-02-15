@@ -490,6 +490,23 @@ export class HabboAvatarEditor {
     const yh = yellowBottom - yy; // 212
     const yBottom = yy + yh;
 
+    // --- Grey sub-menu bar behind yellow border ---
+    const subBarY = 50;
+    const subBarH = 40;
+    ctx.beginPath();
+    ctx.moveTo(yx + r, subBarY);
+    ctx.lineTo(yx + yw - r, subBarY);
+    ctx.arcTo(yx + yw, subBarY, yx + yw, subBarY + r, r);
+    ctx.lineTo(yx + yw, subBarY + subBarH - r);
+    ctx.arcTo(yx + yw, subBarY + subBarH, yx + yw - r, subBarY + subBarH, r);
+    ctx.lineTo(yx + r, subBarY + subBarH);
+    ctx.arcTo(yx, subBarY + subBarH, yx, subBarY + subBarH - r, r);
+    ctx.lineTo(yx, subBarY + r);
+    ctx.arcTo(yx, subBarY, yx + r, subBarY, r);
+    ctx.closePath();
+    ctx.fillStyle = '#E5E3E1';
+    ctx.fill();
+
     // --- Yellow border (no notch — flat bottom) ---
     ctx.beginPath();
     ctx.moveTo(yx + r, yy);
