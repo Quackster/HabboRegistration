@@ -142,9 +142,9 @@ export class HabboAvatarEditor {
     const genderSubIdx = this.state.figure.getGender() === 'F' ? 1 : 0;
     this.mainMenu.showMenuIndex(0, genderSubIdx);
 
-    // Body part menu (from AvatarEditorUi.as lines 160-161)
+    // Body part menu - positioned so grid aligns with color chooser and main menu at x=18
     this.bodyPartMenu = new BodyPartMenu(
-      3, 100,
+      9, 100,
       this.config.showClubSelections,
       this.uiAssets,
       this.hitRegions,
