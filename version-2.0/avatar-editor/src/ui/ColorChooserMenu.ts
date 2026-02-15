@@ -253,7 +253,7 @@ export class ColorChooserMenu {
     const arrowName = direction === 'Right' ? 'arrowSmallRight' : 'arrowSmallLeft';
     const arrow = this.uiAssets.get(arrowName);
     if (arrow) {
-      ctx.drawImage(arrow, x, y);
+      ctx.drawImage(arrow, x + 3, y + 3);
     }
   }
 }

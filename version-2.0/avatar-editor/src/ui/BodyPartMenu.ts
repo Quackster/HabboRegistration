@@ -287,10 +287,9 @@ export class BodyPartMenu {
   }
 
   private drawRemoveItem(ctx: CanvasRenderingContext2D, x: number, y: number, selected: boolean): void {
-    // partRemove shape has internal offset (6,6), so add that to the placement
     const removeIcon = this.uiAssets.get('partRemove');
     if (removeIcon) {
-      ctx.drawImage(removeIcon, x + 10, y - 5);
+      ctx.drawImage(removeIcon, x + 6, y + 6);
     }
 
     // Draw selection highlight (grey border) for currently selected item
@@ -306,7 +305,7 @@ export class BodyPartMenu {
     const arrowName = direction === 'Right' ? 'partArrowRight' : 'partArrowLeft';
     const arrow = this.uiAssets.get(arrowName);
     if (arrow) {
-      ctx.drawImage(arrow, x, y);
+      ctx.drawImage(arrow, x + 6, y + 6);
     }
   }
 }
