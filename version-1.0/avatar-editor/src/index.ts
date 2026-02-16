@@ -1,24 +1,64 @@
-import { PART_TYPES, PREVIEW_X, PREVIEW_START_Y, PREVIEW_SPACING } from './config';
-import { loadSymbolMap, getAllImageIds } from './data/SymbolMap';
-import { loadFigureData, getPartAndColor, getPartsAndIndexes, getAllPartColors, getPartNumber, getPartIndexByNumber } from './data/FigureData';
-import { loadLocalization } from './data/Localization';
-import { parseFigureString, encodeFigureString, padColorIndex } from './model/FigureString';
-import * as state from './model/EditorState';
-import { setAssetsPath, preloadSprites } from './rendering/SpriteLoader';
-import { preloadUIAssets } from './rendering/UIAssets';
-import * as renderer from './rendering/AvatarRenderer';
-import { renderPreviewIcon } from './rendering/PreviewIconRenderer';
-import { createCanvas, getCtx, setRenderCallback, startRenderLoop } from './ui/CanvasManager';
-import { drawBackground } from './ui/BackgroundPanel';
-import { setupGenderSelector, drawGenderSelector } from './ui/GenderSelector';
-import { drawAvatar, startAnimation, stopAnimation } from './ui/AvatarDisplay';
-import { setupRotationControls, drawRotationControls } from './ui/RotationControls';
-import { setupPartNavigator, drawPartNavigator } from './ui/PartNavigator';
-import { setupColorPalette, setColors, drawColorPalettes } from './ui/ColorPalette';
-import { setupRandomizeButton, drawRandomizeButton } from './ui/RandomizeButton';
-import { setupContinueButton, drawContinueButton } from './ui/ContinueButton';
-import { loadFrames, startLoadingAnimation, stopLoadingAnimation } from './ui/LoadingScreen';
-import { getConfig, sendFigure, sendAllowedToProceed } from './api/Bridge';
+import {
+  PART_TYPES,
+  PREVIEW_X,
+  PREVIEW_START_Y,
+  PREVIEW_SPACING,
+} from "./config";
+import { loadSymbolMap, getAllImageIds } from "./data/SymbolMap";
+import {
+  loadFigureData,
+  getPartAndColor,
+  getPartsAndIndexes,
+  getAllPartColors,
+  getPartNumber,
+  getPartIndexByNumber,
+} from "./data/FigureData";
+import { loadLocalization } from "./data/Localization";
+import {
+  parseFigureString,
+  encodeFigureString,
+  padColorIndex,
+} from "./model/FigureString";
+import * as state from "./model/EditorState";
+import { setAssetsPath, preloadSprites } from "./rendering/SpriteLoader";
+import { preloadUIAssets } from "./rendering/UIAssets";
+import * as renderer from "./rendering/AvatarRenderer";
+import { renderPreviewIcon } from "./rendering/PreviewIconRenderer";
+import {
+  createCanvas,
+  getCtx,
+  setRenderCallback,
+  startRenderLoop,
+} from "./ui/CanvasManager";
+import { drawBackground } from "./ui/BackgroundPanel";
+import { setupGenderSelector, drawGenderSelector } from "./ui/GenderSelector";
+import { drawAvatar, startAnimation, stopAnimation } from "./ui/AvatarDisplay";
+import {
+  setupRotationControls,
+  drawRotationControls,
+} from "./ui/RotationControls";
+import { setupPartNavigator, drawPartNavigator } from "./ui/PartNavigator";
+import {
+  setupColorPalette,
+  setColors,
+  drawColorPalettes,
+} from "./ui/ColorPalette";
+import {
+  setupRandomizeButton,
+  drawRandomizeButton,
+} from "./ui/RandomizeButton";
+import { setupContinueButton, drawContinueButton } from "./ui/ContinueButton";
+import {
+  loadFrames,
+  startLoadingAnimation,
+  stopLoadingAnimation,
+} from "./ui/LoadingScreen";
+import {
+  getConfig,
+  sendFigure,
+  sendAllowedToProceed,
+  submitFormPost,
+} from "./api/Bridge";
 
 async function init() {
   const config = getConfig();
@@ -52,7 +92,9 @@ async function init() {
 
   const elapsed = Date.now() - loadingStart;
   if (elapsed < MIN_LOADING_MS) {
-    await new Promise(resolve => setTimeout(resolve, MIN_LOADING_MS - elapsed));
+    await new Promise((resolve) =>
+      setTimeout(resolve, MIN_LOADING_MS - elapsed),
+    );
   }
 
   await spritePreload;
@@ -64,16 +106,20 @@ async function init() {
   let genderCode = config.gender;
   const hasExplicitConfig = !!(config.rawFigure && config.rawGender);
 
-  if (hasExplicitConfig && figure.length === 25 && (genderCode === 'M' || genderCode === 'F')) {
-    state.setGender(genderCode === 'M' ? 'male' : 'female');
+  if (
+    hasExplicitConfig &&
+    figure.length === 25 &&
+    (genderCode === "M" || genderCode === "F")
+  ) {
+    state.setGender(genderCode === "M" ? "male" : "female");
     if (!setInitialLook(figure, genderCode)) {
       // Provided config was invalid, randomize instead
-      state.setGender(Math.random() < 0.5 ? 'male' : 'female');
+      state.setGender(Math.random() < 0.5 ? "male" : "female");
       randomizeAll();
     }
   } else {
     // No config provided — start with a random look and gender
-    state.setGender(Math.random() < 0.5 ? 'male' : 'female');
+    state.setGender(Math.random() < 0.5 ? "male" : "female");
     randomizeAll();
   }
 
@@ -108,6 +154,7 @@ async function init() {
     const figStr = buildFigureString();
     sendFigure(state.getGenderCode(), figStr);
     sendAllowedToProceed(true);
+    submitFormPost(state.getGenderCode(), figStr);
   });
 
   // Set initial color palettes
@@ -147,8 +194,11 @@ function setInitialLook(figure: string, genderCode: string): boolean {
     const result = getPartAndColor([slice.modelId, slice.colorIdx], genderCode);
     if (!result) return false;
 
-    const [setIndex, partType] = getPartIndexByNumber(slice.modelId, state.chosenGender);
-    if (partType === 'not found') return false;
+    const [setIndex, partType] = getPartIndexByNumber(
+      slice.modelId,
+      state.chosenGender,
+    );
+    if (partType === "not found") return false;
 
     const colorIdx = parseInt(slice.colorIdx, 10) - 1;
     state.partState[partType] = [setIndex, colorIdx];
@@ -165,8 +215,14 @@ function setInitialLook(figure: string, genderCode: string): boolean {
 
 function setPartsFromData(mainPart: string, dir: string): void {
   const ps = state.partState[mainPart] || [0, 0];
-  const colorIdx = mainPart !== 'hd' ? 0 : ps[1];
-  const result = getPartsAndIndexes(state.chosenGender, mainPart, dir, ps[0], colorIdx);
+  const colorIdx = mainPart !== "hd" ? 0 : ps[1];
+  const result = getPartsAndIndexes(
+    state.chosenGender,
+    mainPart,
+    dir,
+    ps[0],
+    colorIdx,
+  );
   if (!result) return;
 
   state.partState[mainPart] = [result.setIndex, result.colorIndex];
@@ -180,7 +236,7 @@ function setPartsFromData(mainPart: string, dir: string): void {
   sendCurrentFigure();
 }
 
-function navigatePart(partType: string, dir: 'prev' | 'next'): void {
+function navigatePart(partType: string, dir: "prev" | "next"): void {
   setPartsFromData(partType, dir);
   renderer.preloadCurrentSprites(state.direction, state.currentAction);
   requestRedrawAll();
@@ -188,7 +244,7 @@ function navigatePart(partType: string, dir: 'prev' | 'next'): void {
 
 function randomizeAll(): void {
   for (const partType of PART_TYPES) {
-    setPartsFromData(partType, 'randomize');
+    setPartsFromData(partType, "randomize");
   }
   setAllColorButtons();
   renderer.preloadCurrentSprites(state.direction, state.currentAction);
@@ -210,9 +266,9 @@ function setColorButtons(mainPart: string): void {
 }
 
 function buildFigureString(): string {
-  const slices = PART_TYPES.map(partType => {
+  const slices = PART_TYPES.map((partType) => {
     const ps = state.partState[partType];
-    if (!ps) return { modelId: '001', colorIdx: '01' };
+    if (!ps) return { modelId: "001", colorIdx: "01" };
     const modelId = getPartNumber(ps[0], partType, state.chosenGender);
     const colorIdx = padColorIndex(ps[1] + 1);
     return { modelId, colorIdx };
@@ -235,8 +291,8 @@ function drawPreviewIcons(ctx: CanvasRenderingContext2D): void {
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
 } else {
   init();
 }
