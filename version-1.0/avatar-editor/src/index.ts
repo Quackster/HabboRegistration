@@ -3,6 +3,8 @@ import {
   PREVIEW_X,
   PREVIEW_START_Y,
   PREVIEW_SPACING,
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
 } from "./config";
 import { loadSymbolMap, getAllImageIds } from "./data/SymbolMap";
 import {
@@ -71,6 +73,8 @@ async function init() {
     console.error(`No #${config.container} element found`);
     return;
   }
+  container.style.width = CANVAS_WIDTH + "px";
+  container.style.height = CANVAS_HEIGHT + "px";
   if (config.backgroundColor) {
     container.style.backgroundColor = config.backgroundColor;
   }
