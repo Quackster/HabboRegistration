@@ -18,7 +18,7 @@ export function loadFrames(assetsPath: string): Promise<void> {
         img.onerror = () => resolve(null);
       })
     );
-    img.src = `${assetsPath}frames/${i}.png`;
+    img.src = `${assetsPath}frames/${i}.webp`;
   }
 
   return Promise.all(promises).then((images) => {

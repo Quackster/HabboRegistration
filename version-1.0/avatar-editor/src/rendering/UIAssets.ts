@@ -32,7 +32,7 @@ function loadImage(name: string): Promise<HTMLImageElement> {
       pending.delete(name);
       reject(new Error(`Failed to load UI asset: ${name}`));
     };
-    img.src = `${assetsBase}ui/${name}.png`;
+    img.src = `${assetsBase}ui/${name}.webp`;
   });
 
   pending.set(name, promise);

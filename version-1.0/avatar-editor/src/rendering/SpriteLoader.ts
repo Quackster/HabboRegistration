@@ -27,7 +27,7 @@ export function loadSprite(imageId: number): Promise<HTMLImageElement> {
       pending.delete(key);
       reject(new Error(`Failed to load sprite ${imageId}`));
     };
-    img.src = `${assetsPath}sprites/${imageId}.png`;
+    img.src = `${assetsPath}sprites/${imageId}.webp`;
   });
 
   pending.set(key, promise);

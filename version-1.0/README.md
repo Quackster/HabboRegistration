@@ -2,7 +2,7 @@
 
 TypeScript and HTML Canvas replacement for the Flash-based `HabboRegistration.swf` (v38, 2007) avatar editor. Renders entirely on a `<canvas>` element with no Flash dependency.
 
-# Screenshot 
+# Screenshot
 
 <img width="406" height="327" alt="image" src="https://github.com/user-attachments/assets/51e02526-9b62-4c62-bf77-c049ea9a5638" />
 
@@ -35,7 +35,7 @@ Then open the URL Vite prints (usually `http://localhost:5173`).
 Sprites and UI assets are extracted from the decompiled SWF via a bundled script:
 
 ```
-npm run extract
+npm run extract-and-optimize
 ```
 
 This reads from `decompiled/` (FFDEC output in the version-1.0 root) and writes to `avatar-editor/assets/`. You only need to run this once, or again if the decompiled source changes.
@@ -48,8 +48,8 @@ The build copies `avatar-editor/assets/` into `dist/`. This folder contains:
 - `data/figure_editor.xml` - localisation strings
 - `data/symbols.csv` - sprite name to filename mapping
 - `data/spriteoffsets.csv` - sprite x/y offsets extracted from the decompiled SWF
-- `sprites/` - individual avatar part PNGs
-- `ui/` - UI element PNGs (arrows, buttons, backgrounds, palette controls)
+- `sprites/` - individual avatar part WebP images
+- `ui/` - UI element WebP images (arrows, buttons, backgrounds, palette controls)
 
 These must be served from the same path as the JS file (or set `assetsPath` in the config).
 
@@ -68,12 +68,12 @@ The first script defines `window.HabboRegistration`, which is the callback inter
   // Callback interface - the editor calls these as the user makes changes.
   // In the original SWF these were ExternalInterface calls.
   window.HabboRegistration = {
-    setGenderAndFigure: function(gender, figure) {
+    setGenderAndFigure: function (gender, figure) {
       // Called whenever the figure or gender changes.
       // gender: 'M' or 'F'
       // figure: numeric figure string, e.g. '1750118022210132810129003'
     },
-    setAllowedToProceed: function(allowed) {
+    setAllowedToProceed: function (allowed) {
       // Called to indicate whether the current figure is valid for submission.
       // allowed: true/false
     },
@@ -81,11 +81,11 @@ The first script defines `window.HabboRegistration`, which is the callback inter
 
   // Editor config
   window.HabboRegistrationConfig = {
-    figure: '1750118022210132810129003',
-    gender: 'M',
-    assetsPath: './',
-    figuredata_url: 'data/figure_data_xml.xml',
-    localization_url: 'data/figure_editor.xml',
+    figure: "1750118022210132810129003",
+    gender: "M",
+    assetsPath: "./",
+    figuredata_url: "data/figure_data_xml.xml",
+    localization_url: "data/figure_editor.xml",
   };
 </script>
 
@@ -96,13 +96,13 @@ The editor attaches itself to the `#editor-container` div automatically.
 
 ### Config options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `figure` | string | `'1750118022210132810129003'` | Numeric figure string to load. |
-| `gender` | string | `'M'` | `'M'` or `'F'`. |
-| `assetsPath` | string | `'./'` | Base path for the `data/`, `sprites/`, and `ui/` asset folders. Relative to the page. |
-| `figuredata_url` | string | `'figure_data_xml.xml'` | Path to the figure data XML file, relative to `assetsPath`. |
-| `localization_url` | string | `'figure_editor.xml'` | Path to the localisation XML file, relative to `assetsPath`. |
+| Option             | Type   | Default                       | Description                                                                           |
+| ------------------ | ------ | ----------------------------- | ------------------------------------------------------------------------------------- |
+| `figure`           | string | `'1750118022210132810129003'` | Numeric figure string to load.                                                        |
+| `gender`           | string | `'M'`                         | `'M'` or `'F'`.                                                                       |
+| `assetsPath`       | string | `'./'`                        | Base path for the `data/`, `sprites/`, and `ui/` asset folders. Relative to the page. |
+| `figuredata_url`   | string | `'figure_data_xml.xml'`       | Path to the figure data XML file, relative to `assetsPath`.                           |
+| `localization_url` | string | `'figure_editor.xml'`         | Path to the localisation XML file, relative to `assetsPath`.                          |
 
 ### Reading the result
 
