@@ -1,4 +1,4 @@
-import { EditorConfig, DEFAULT_CONFIG, DEFAULT_SET_TYPE, MAIN_MENU_STRUCT, CANVAS_WIDTH_WITH_ARROWS, CANVAS_WIDTH_NO_ARROWS, AVATAR_DISPLAY_X_ARROWS, AVATAR_DISPLAY_X_NO_ARROWS } from './config';
+import { EditorConfig, DEFAULT_CONFIG, DEFAULT_SET_TYPE, MAIN_MENU_STRUCT, CANVAS_WIDTH_WITH_ARROWS, CANVAS_WIDTH_NO_ARROWS, CANVAS_HEIGHT, AVATAR_DISPLAY_X_ARROWS, AVATAR_DISPLAY_X_NO_ARROWS } from './config';
 import { FigureData } from './data/FigureData';
 import { DrawOrder } from './data/DrawOrder';
 import { SymbolMap } from './data/SymbolMap';
@@ -16,6 +16,7 @@ import { ColorChooserMenu } from './ui/ColorChooserMenu';
 import { AvatarDisplay } from './ui/AvatarDisplay';
 import { RandomizeButton } from './ui/RandomizeButton';
 import { HabboEditorBridge } from './api/HabboEditorBridge';
+import { loadFrames, startLoadingAnimation, stopLoadingAnimation } from './ui/LoadingScreen';
 
 export class HabboAvatarEditor {
   private config: EditorConfig;
@@ -48,8 +49,24 @@ export class HabboAvatarEditor {
   }
 
   private async init(): Promise<void> {
-    // Phase 1: Load data files
     const assetsPath = this.config.assetsPath;
+
+    // Phase 0: Show loading screen immediately
+    const showArrows = this.config.showRotationArrows;
+    const canvasWidth = showArrows ? CANVAS_WIDTH_WITH_ARROWS : CANVAS_WIDTH_NO_ARROWS;
+    const loadingCanvas = document.createElement('canvas');
+    loadingCanvas.width = canvasWidth;
+    loadingCanvas.height = CANVAS_HEIGHT;
+    loadingCanvas.style.display = 'block';
+    this.container.appendChild(loadingCanvas);
+
+    await loadFrames(assetsPath);
+    startLoadingAnimation(loadingCanvas);
+
+    const MIN_LOADING_MS = 3000;
+    const loadingStart = Date.now();
+
+    // Phase 1: Load data files
     const dataPath = assetsPath + (assetsPath.endsWith('/') ? '' : '/') + 'data/';
 
     await Promise.all([
@@ -74,6 +91,16 @@ export class HabboAvatarEditor {
     await this.uiAssets.loadAll();
 
     console.log(`[HabboEditor] UI assets loaded`);
+
+    // Ensure minimum loading screen display time
+    const elapsed = Date.now() - loadingStart;
+    if (elapsed < MIN_LOADING_MS) {
+      await new Promise(resolve => setTimeout(resolve, MIN_LOADING_MS - elapsed));
+    }
+
+    // Remove loading screen
+    stopLoadingAnimation();
+    this.container.removeChild(loadingCanvas);
 
     // Phase 4: Initialize figure
     this.initFigure();
