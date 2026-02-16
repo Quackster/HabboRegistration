@@ -121,6 +121,18 @@ function main() {
   }
   console.log(`Copied ${uiCopied} UI sprite PNGs`);
 
+  // 6. Copy loading animation frames from DefineSprite_1702
+  mkdirSync(join(ASSETS, 'frames'), { recursive: true });
+  const loadingSpriteDir = join(DECOMPILED, 'sprites', 'DefineSprite_1702');
+  let framesCopied = 0;
+  for (let i = 1; ; i++) {
+    const src = join(loadingSpriteDir, `${i}.png`);
+    if (!existsSync(src)) break;
+    copyFileSync(src, join(ASSETS, 'frames', `${i}.png`));
+    framesCopied++;
+  }
+  console.log(`Copied ${framesCopied} loading animation frames (DefineSprite_1702)`);
+
   console.log('=== Extraction complete ===');
 }
 
