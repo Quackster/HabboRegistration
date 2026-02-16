@@ -1,10 +1,10 @@
 import { PART_TYPES, PREVIEW_X, PREVIEW_START_Y, PREVIEW_SPACING } from './config';
-import { loadSymbolMap } from './data/SymbolMap';
+import { loadSymbolMap, getAllImageIds } from './data/SymbolMap';
 import { loadFigureData, getPartAndColor, getPartsAndIndexes, getAllPartColors, getPartNumber, getPartIndexByNumber } from './data/FigureData';
 import { loadLocalization } from './data/Localization';
 import { parseFigureString, encodeFigureString, padColorIndex } from './model/FigureString';
 import * as state from './model/EditorState';
-import { setAssetsPath } from './rendering/SpriteLoader';
+import { setAssetsPath, preloadSprites } from './rendering/SpriteLoader';
 import { preloadUIAssets } from './rendering/UIAssets';
 import * as renderer from './rendering/AvatarRenderer';
 import { renderPreviewIcon } from './rendering/PreviewIconRenderer';
@@ -47,10 +47,15 @@ async function init() {
     preloadUIAssets(assetsPath),
   ]);
 
+  // Preload all sprites while loading screen is still showing
+  const spritePreload = preloadSprites(getAllImageIds());
+
   const elapsed = Date.now() - loadingStart;
   if (elapsed < MIN_LOADING_MS) {
     await new Promise(resolve => setTimeout(resolve, MIN_LOADING_MS - elapsed));
   }
+
+  await spritePreload;
 
   stopLoadingAnimation();
 

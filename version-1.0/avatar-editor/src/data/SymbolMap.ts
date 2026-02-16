@@ -59,3 +59,12 @@ export function getSpriteInfo(name: string): SpriteInfo | undefined {
 export function hasSpriteInfo(name: string): boolean {
   return nameToInfo?.has(name) ?? false;
 }
+
+export function getAllImageIds(): number[] {
+  if (!nameToInfo) return [];
+  const ids = new Set<number>();
+  for (const info of nameToInfo.values()) {
+    ids.add(info.imageId);
+  }
+  return Array.from(ids);
+}
