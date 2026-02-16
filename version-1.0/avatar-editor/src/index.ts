@@ -17,13 +17,28 @@ import { setupPartNavigator, drawPartNavigator } from './ui/PartNavigator';
 import { setupColorPalette, setColors, drawColorPalettes } from './ui/ColorPalette';
 import { setupRandomizeButton, drawRandomizeButton } from './ui/RandomizeButton';
 import { setupContinueButton, drawContinueButton } from './ui/ContinueButton';
+import { loadFrames, startLoadingAnimation, stopLoadingAnimation } from './ui/LoadingScreen';
 import { getConfig, sendFigure, sendAllowedToProceed } from './api/Bridge';
 
 async function init() {
   const config = getConfig();
   const assetsPath = config.assetsPath;
 
-  // Phase 1: Load data files and UI assets
+  // Phase 1: Create canvas and show loading screen immediately
+  const container = document.getElementById('editor-container');
+  if (!container) {
+    console.error('No #editor-container element found');
+    return;
+  }
+  createCanvas(container);
+
+  await loadFrames(assetsPath);
+  startLoadingAnimation(getCtx());
+
+  // Phase 2: Load data files and UI assets while loading screen plays
+  const MIN_LOADING_MS = 3000;
+  const loadingStart = Date.now();
+
   setAssetsPath(assetsPath);
   await Promise.all([
     loadSymbolMap(assetsPath),
@@ -32,13 +47,12 @@ async function init() {
     preloadUIAssets(assetsPath),
   ]);
 
-  // Phase 2: Create canvas
-  const container = document.getElementById('editor-container');
-  if (!container) {
-    console.error('No #editor-container element found');
-    return;
+  const elapsed = Date.now() - loadingStart;
+  if (elapsed < MIN_LOADING_MS) {
+    await new Promise(resolve => setTimeout(resolve, MIN_LOADING_MS - elapsed));
   }
-  createCanvas(container);
+
+  stopLoadingAnimation();
 
   // Phase 3: Set initial look
   let figure = config.figure;
