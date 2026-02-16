@@ -58,6 +58,7 @@ import {
   sendFigure,
   sendAllowedToProceed,
   submitFormPost,
+  sendSubmit,
 } from "./api/Bridge";
 
 async function init() {
@@ -154,6 +155,7 @@ async function init() {
     const figStr = buildFigureString();
     sendFigure(state.getGenderCode(), figStr);
     sendAllowedToProceed(true);
+    sendSubmit(state.getGenderCode(), figStr);
     submitFormPost(state.getGenderCode(), figStr);
   });
 

@@ -14,6 +14,7 @@ declare global {
     HabboRegistration?: {
       setGenderAndFigure?: (gender: string, figure: string) => void;
       setAllowedToProceed?: (allowed: boolean) => void;
+      onSubmit?: (gender: string, figure: string) => void;
     };
   }
 }
@@ -46,6 +47,13 @@ export function sendAllowedToProceed(allowed: boolean): void {
   const cb = window.HabboRegistration?.setAllowedToProceed;
   if (cb) {
     cb(allowed);
+  }
+}
+
+export function sendSubmit(gender: string, figure: string): void {
+  const cb = window.HabboRegistration?.onSubmit;
+  if (cb) {
+    cb(gender, figure);
   }
 }
 
