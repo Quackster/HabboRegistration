@@ -5,6 +5,7 @@ import {
   PREVIEW_SPACING,
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
+  setTextColor,
 } from "./config";
 import { loadSymbolMap, getAllImageIds } from "./data/SymbolMap";
 import {
@@ -77,6 +78,9 @@ async function init() {
   container.style.height = CANVAS_HEIGHT + "px";
   if (config.backgroundColor) {
     container.style.backgroundColor = config.backgroundColor;
+  }
+  if (config.textColor) {
+    setTextColor(config.textColor);
   }
   createCanvas(container);
 

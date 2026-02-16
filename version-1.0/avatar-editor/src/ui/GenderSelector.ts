@@ -3,6 +3,7 @@ import {
   GENDER_GIRL_X,
   GENDER_Y,
   GENDER_LABEL_Y,
+  getTextColor,
 } from "../config";
 import { getText } from "../data/Localization";
 import { getUIAsset } from "../rendering/UIAssets";
@@ -46,7 +47,7 @@ export function drawGenderSelector(ctx: CanvasRenderingContext2D): void {
 
   // Labels
   ctx.font = "bold 12px Verdana";
-  ctx.fillStyle = "#333";
+  ctx.fillStyle = getTextColor();
   ctx.textAlign = "center";
   ctx.fillText(getText("boy"), GENDER_BOY_X + 3, GENDER_LABEL_Y + 11);
   ctx.fillText(getText("girl"), GENDER_GIRL_X + 3, GENDER_LABEL_Y + 11);

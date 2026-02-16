@@ -12,6 +12,7 @@ declare global {
       post_gender?: string;
       container?: string;
       backgroundColor?: string;
+      textColor?: string;
     };
     HabboRegistration?: {
       setGenderAndFigure?: (gender: string, figure: string) => void;
@@ -37,6 +38,7 @@ export function getConfig() {
     postGender: cfg.post_gender || "gender",
     container: cfg.container || "editor-container",
     backgroundColor: cfg.backgroundColor || "",
+    textColor: cfg.textColor || "",
   };
 }
 
