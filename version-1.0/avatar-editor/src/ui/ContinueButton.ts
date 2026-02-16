@@ -1,7 +1,7 @@
 import { CONTINUE_X, CONTINUE_Y, CONTINUE_DELAY } from "../config";
 import { getText } from "../data/Localization";
 import { getUIAsset } from "../rendering/UIAssets";
-import { addHitRegion, removeHitRegions } from "./HitRegion";
+import { addHitRegion } from "./HitRegion";
 
 let isActive = false;
 
@@ -22,7 +22,9 @@ export function setupContinueButton(onContinue: () => void): void {
         if (isActive) {
           onContinue();
           isActive = false;
-          removeHitRegions("continue");
+          setTimeout(() => {
+            isActive = true;
+          }, CONTINUE_DELAY);
         }
       },
     });
