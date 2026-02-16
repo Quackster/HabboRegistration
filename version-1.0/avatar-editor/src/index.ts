@@ -66,9 +66,9 @@ async function init() {
   const assetsPath = config.assetsPath;
 
   // Phase 1: Create canvas and show loading screen immediately
-  const container = document.getElementById('editor-container');
+  const container = document.getElementById(config.container);
   if (!container) {
-    console.error('No #editor-container element found');
+    console.error(`No #${config.container} element found`);
     return;
   }
   if (config.backgroundColor) {

@@ -10,6 +10,7 @@ declare global {
       post_enabled?: boolean;
       post_figure?: string;
       post_gender?: string;
+      container?: string;
       backgroundColor?: string;
     };
     HabboRegistration?: {
@@ -34,6 +35,7 @@ export function getConfig() {
     postEnabled: cfg.post_enabled ?? false,
     postFigure: cfg.post_figure || "figure",
     postGender: cfg.post_gender || "gender",
+    container: cfg.container || "editor-container",
     backgroundColor: cfg.backgroundColor || "",
   };
 }
