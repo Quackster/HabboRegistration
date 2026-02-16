@@ -10,6 +10,7 @@ declare global {
       post_enabled?: boolean;
       post_figure?: string;
       post_gender?: string;
+      backgroundColor?: string;
     };
     HabboRegistration?: {
       setGenderAndFigure?: (gender: string, figure: string) => void;
@@ -33,6 +34,7 @@ export function getConfig() {
     postEnabled: cfg.post_enabled ?? false,
     postFigure: cfg.post_figure || "figure",
     postGender: cfg.post_gender || "gender",
+    backgroundColor: cfg.backgroundColor || "",
   };
 }
 

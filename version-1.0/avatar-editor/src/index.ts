@@ -71,6 +71,9 @@ async function init() {
     console.error('No #editor-container element found');
     return;
   }
+  if (config.backgroundColor) {
+    container.style.backgroundColor = config.backgroundColor;
+  }
   createCanvas(container);
 
   await loadFrames(assetsPath);
