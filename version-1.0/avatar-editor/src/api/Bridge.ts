@@ -4,8 +4,6 @@ declare global {
       figure?: string;
       gender?: string;
       assetsPath?: string;
-      figuredata_url?: string;
-      localization_url?: string;
       post_url?: string;
       post_enabled?: boolean;
       post_figure?: string;
@@ -13,6 +11,7 @@ declare global {
       container?: string;
       backgroundColor?: string;
       textColor?: string;
+      localization_url?: string;
     };
     HabboRegistration?: {
       setGenderAndFigure?: (gender: string, figure: string) => void;
@@ -30,8 +29,6 @@ export function getConfig() {
     rawFigure: cfg.figure,
     rawGender: cfg.gender,
     assetsPath: cfg.assetsPath || "./",
-    figuredataUrl: cfg.figuredata_url || "figure_data_xml.xml",
-    localizationUrl: cfg.localization_url || "figure_editor.xml",
     postUrl: cfg.post_url || "",
     postEnabled: cfg.post_enabled ?? false,
     postFigure: cfg.post_figure || "figure",
@@ -39,6 +36,7 @@ export function getConfig() {
     container: cfg.container || "editor-container",
     backgroundColor: cfg.backgroundColor || "",
     textColor: cfg.textColor || "",
+    localizationUrl: cfg.localization_url || "data/figure_editor.xml",
   };
 }
 

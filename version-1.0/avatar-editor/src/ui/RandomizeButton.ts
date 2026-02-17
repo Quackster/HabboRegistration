@@ -1,6 +1,7 @@
 import { RANDOMIZE_X, RANDOMIZE_Y } from "../config";
 import { getText } from "../data/Localization";
 import { getUIAsset } from "../rendering/UIAssets";
+import { drawRegion } from "../rendering/Atlas";
 import { addHitRegion } from "./HitRegion";
 
 export function setupRandomizeButton(onRandomize: () => void): void {
@@ -18,7 +19,7 @@ export function setupRandomizeButton(onRandomize: () => void): void {
 export function drawRandomizeButton(ctx: CanvasRenderingContext2D): void {
   const btnImg = getUIAsset("randomizeBtn");
   if (btnImg) {
-    ctx.drawImage(btnImg, RANDOMIZE_X, RANDOMIZE_Y);
+    drawRegion(ctx, btnImg, RANDOMIZE_X, RANDOMIZE_Y);
   }
 
   // Draw text label on top

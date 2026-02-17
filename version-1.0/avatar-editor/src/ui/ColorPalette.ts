@@ -4,6 +4,7 @@ import {
 } from '../config';
 import { parseColor } from '../rendering/ColorTint';
 import { getUIAsset } from '../rendering/UIAssets';
+import { drawRegion } from '../rendering/Atlas';
 import { addHitRegion, removeHitRegions } from './HitRegion';
 
 interface PaletteState {
@@ -126,7 +127,7 @@ export function drawColorPalettes(ctx: CanvasRenderingContext2D): void {
 
       // Draw color button background
       if (colorBtnBg) {
-        ctx.drawImage(colorBtnBg, cx, cy);
+        drawRegion(ctx, colorBtnBg, cx, cy);
       }
 
       // Draw color fill on top (inset by 2px for the border)
@@ -136,7 +137,7 @@ export function drawColorPalettes(ctx: CanvasRenderingContext2D): void {
 
       // Selection indicator using original selector image
       if (i === p.selectedIndex && selector) {
-        ctx.drawImage(selector, cx - 1, cy - 1);
+        drawRegion(ctx, selector, cx - 1, cy - 1);
       }
     }
 
@@ -147,14 +148,14 @@ export function drawColorPalettes(ctx: CanvasRenderingContext2D): void {
       const cx = baseX + col * COLOR_CELL_SIZE;
       const cy = baseY + row * COLOR_CELL_SIZE;
       if (inactiveBtn) {
-        ctx.drawImage(inactiveBtn, cx, cy);
+        drawRegion(ctx, inactiveBtn, cx, cy);
       }
     }
 
     // Page arrows using original images
     if (p.colors.length > COLORS_PER_PAGE) {
-      if (palArrowLeft) ctx.drawImage(palArrowLeft, baseX - 20, baseY);
-      if (palArrowRight) ctx.drawImage(palArrowRight, baseX + 122, baseY);
+      if (palArrowLeft) drawRegion(ctx, palArrowLeft, baseX - 20, baseY);
+      if (palArrowRight) drawRegion(ctx, palArrowRight, baseX + 122, baseY);
     }
   }
 }

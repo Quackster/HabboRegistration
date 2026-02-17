@@ -1,8 +1,9 @@
 import { RENDER_ORDER, PREVIEW_OFFSETS } from '../config';
 import { getSpriteInfo } from '../data/SymbolMap';
-import { getSpriteSync, loadSprite } from './SpriteLoader';
+import { getSpriteSync } from './SpriteLoader';
 import { applyColorTint, parseColor } from './ColorTint';
 import { getUIAsset } from './UIAssets';
+import { drawRegion } from './Atlas';
 import { PartInfo } from './AvatarRenderer';
 
 export function renderPreviewIcon(
@@ -18,15 +19,15 @@ export function renderPreviewIcon(
 
   // Draw preview icon background (47x47)
   if (prevBg) {
-    ctx.drawImage(prevBg, x + 11, y - 4);
+    drawRegion(ctx, prevBg, x + 11, y - 4);
   }
 
   // Clip to mask area (33x33, offset to match original Flash mask position)
   ctx.save();
   const clipX = x + 18;
   const clipY = y + 3;
-  const clipW = prevMask ? prevMask.width : 33;
-  const clipH = prevMask ? prevMask.height : 33;
+  const clipW = prevMask ? prevMask.w : 33;
+  const clipH = prevMask ? prevMask.h : 33;
   ctx.beginPath();
   ctx.rect(clipX, clipY, clipW, clipH);
   ctx.clip();
@@ -41,20 +42,17 @@ export function renderPreviewIcon(
     const spriteInfo = getSpriteInfo(spriteName);
     if (!spriteInfo) continue;
 
-    const img = getSpriteSync(spriteInfo.imageId);
-    if (!img) {
-      loadSprite(spriteInfo.imageId);
-      continue;
-    }
+    const region = getSpriteSync(spriteInfo.imageId);
+    if (!region) continue;
 
     const drawX = x + spriteInfo.offsetX;
     const drawY = y + spriteInfo.offsetY + offsetY;
 
     if (partName === 'ey') {
-      ctx.drawImage(img, drawX, drawY);
+      drawRegion(ctx, region, drawX, drawY);
     } else {
       const [r, g, b] = parseColor(info.color);
-      applyColorTint(ctx, img, r, g, b, drawX, drawY);
+      applyColorTint(ctx, region, r, g, b, drawX, drawY);
     }
   }
 

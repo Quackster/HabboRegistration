@@ -1,6 +1,7 @@
 import { CONTINUE_X, CONTINUE_Y, CONTINUE_DELAY } from "../config";
 import { getText } from "../data/Localization";
 import { getUIAsset } from "../rendering/UIAssets";
+import { drawRegion } from "../rendering/Atlas";
 import { addHitRegion } from "./HitRegion";
 
 let isActive = false;
@@ -37,7 +38,7 @@ export function drawContinueButton(ctx: CanvasRenderingContext2D): void {
 
   const btnImg = getUIAsset("continueBtn");
   if (btnImg) {
-    ctx.drawImage(btnImg, CONTINUE_X, CONTINUE_Y);
+    drawRegion(ctx, btnImg, CONTINUE_X, CONTINUE_Y);
   }
 
   // Draw text label on top (double-draw to match Flash's bold rendering)

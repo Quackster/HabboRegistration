@@ -1,4 +1,5 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from '../config';
+import { getRegion } from '../rendering/Atlas';
 
 const TOTAL_FRAMES = 18;
 const FRAME_INTERVAL = 83; // ~12fps, matching original Flash frame rate
@@ -7,39 +8,31 @@ let frames: HTMLCanvasElement[] = [];
 let currentFrame = 0;
 let timerId: number | null = null;
 
-export function loadFrames(assetsPath: string): Promise<void> {
-  const promises: Promise<HTMLImageElement | null>[] = [];
-
+export function buildLoadingFrames(): void {
+  frames = [];
   for (let i = 1; i <= TOTAL_FRAMES; i++) {
-    const img = new Image();
-    promises.push(
-      new Promise<HTMLImageElement | null>((resolve) => {
-        img.onload = () => resolve(img);
-        img.onerror = () => resolve(null);
-      })
-    );
-    img.src = `${assetsPath}frames/${i}.webp`;
-  }
+    const canvas = document.createElement('canvas');
+    const region = getRegion(`frames/${i}`);
+    if (!region) {
+      frames.push(canvas);
+      continue;
+    }
 
-  return Promise.all(promises).then((images) => {
-    frames = images.map((img) => {
-      const canvas = document.createElement('canvas');
-      if (!img) return canvas;
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imageData.data;
-      for (let j = 0; j < data.length; j += 4) {
-        data[j] = 255 - data[j];
-        data[j + 1] = 255 - data[j + 1];
-        data[j + 2] = 255 - data[j + 2];
-      }
-      ctx.putImageData(imageData, 0, 0);
-      return canvas;
-    });
-  });
+    canvas.width = region.w;
+    canvas.height = region.h;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(region.img, region.x, region.y, region.w, region.h, 0, 0, region.w, region.h);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let j = 0; j < data.length; j += 4) {
+      data[j] = 255 - data[j];
+      data[j + 1] = 255 - data[j + 1];
+      data[j + 2] = 255 - data[j + 2];
+    }
+    ctx.putImageData(imageData, 0, 0);
+    frames.push(canvas);
+  }
 }
 
 export function startLoadingAnimation(ctx: CanvasRenderingContext2D): void {

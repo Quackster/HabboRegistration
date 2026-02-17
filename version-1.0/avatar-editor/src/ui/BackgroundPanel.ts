@@ -1,5 +1,6 @@
 import { CANVAS_WIDTH, CANVAS_HEIGHT, BACKGROUND_Y } from "../config";
 import { getUIAsset } from "../rendering/UIAssets";
+import { drawRegion } from "../rendering/Atlas";
 
 export function drawBackground(ctx: CanvasRenderingContext2D): void {
   // Clear entire canvas (transparent, so container background shows through)
@@ -8,6 +9,6 @@ export function drawBackground(ctx: CanvasRenderingContext2D): void {
   // Draw original background panel image
   const bg = getUIAsset("background");
   if (bg) {
-    ctx.drawImage(bg, 0, BACKGROUND_Y);
+    drawRegion(ctx, bg, 0, BACKGROUND_Y);
   }
 }
