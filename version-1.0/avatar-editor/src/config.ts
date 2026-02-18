@@ -77,6 +77,11 @@ export const CONTINUE_X = 298;
 export const CONTINUE_Y = 308;
 export const CONTINUE_DELAY = 3000; // ms before activation
 
+// Text color (runtime-configurable)
+let _textColor = '#333333';
+export function setTextColor(color: string): void { _textColor = color; }
+export function getTextColor(): string { return _textColor; }
+
 // Default figure
 export const DEFAULT_FIGURE = '1750118022210132810129003';
 export const DEFAULT_GENDER = 'M';

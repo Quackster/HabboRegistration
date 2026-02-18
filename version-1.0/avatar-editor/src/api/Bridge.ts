@@ -6,10 +6,18 @@ declare global {
       assetsPath?: string;
       figuredata_url?: string;
       localization_url?: string;
+      post_url?: string;
+      post_enabled?: boolean;
+      post_figure?: string;
+      post_gender?: string;
+      container?: string;
+      backgroundColor?: string;
+      textColor?: string;
     };
     HabboRegistration?: {
       setGenderAndFigure?: (gender: string, figure: string) => void;
       setAllowedToProceed?: (allowed: boolean) => void;
+      onSubmit?: (gender: string, figure: string) => void;
     };
   }
 }
@@ -17,13 +25,20 @@ declare global {
 export function getConfig() {
   const cfg = window.HabboRegistrationConfig || {};
   return {
-    figure: cfg.figure || '',
-    gender: cfg.gender || '',
+    figure: cfg.figure || "",
+    gender: cfg.gender || "",
     rawFigure: cfg.figure,
     rawGender: cfg.gender,
-    assetsPath: cfg.assetsPath || './',
-    figuredataUrl: cfg.figuredata_url || 'figure_data_xml.xml',
-    localizationUrl: cfg.localization_url || 'figure_editor.xml',
+    assetsPath: cfg.assetsPath || "./",
+    figuredataUrl: cfg.figuredata_url || "figure_data_xml.xml",
+    localizationUrl: cfg.localization_url || "figure_editor.xml",
+    postUrl: cfg.post_url || "",
+    postEnabled: cfg.post_enabled ?? false,
+    postFigure: cfg.post_figure || "figure",
+    postGender: cfg.post_gender || "gender",
+    container: cfg.container || "editor-container",
+    backgroundColor: cfg.backgroundColor || "",
+    textColor: cfg.textColor || "",
   };
 }
 
@@ -39,4 +54,26 @@ export function sendAllowedToProceed(allowed: boolean): void {
   if (cb) {
     cb(allowed);
   }
+}
+
+export function sendSubmit(gender: string, figure: string): void {
+  const cb = window.HabboRegistration?.onSubmit;
+  if (cb) {
+    cb(gender, figure);
+  }
+}
+
+export function submitFormPost(gender: string, figure: string): void {
+  const config = getConfig();
+  if (!config.postEnabled || !config.postUrl) return;
+
+  window.location.href =
+    config.postUrl +
+    config.postGender +
+    "=" +
+    gender +
+    "&" +
+    config.postFigure +
+    "=" +
+    figure;
 }
