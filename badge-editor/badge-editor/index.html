@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Habbo Badge Editor</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a2e;
+      font-family: Arial, sans-serif;
+    }
+    #editor-container {
+      position: relative;
+    }
+    #editor-container canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="editor-container"></div>
+
+  <script>
+    // Bridge configuration - host page sets these before loading the editor
+    window.HabboBadgeEditorConfig = {
+      badge_data: '',              // Pre-existing badge code to edit
+      assetsPath: '',              // Base path for assets (default: relative)
+      badge_data_url: 'data/badge_data.xml',
+      localization_url: 'data/badge_editor.xml',
+      groupId: '0',
+    };
+    window.HabboBadgeEditor = {
+      onSave: function(code, groupId) {
+        console.log('Badge saved:', code, 'Group:', groupId);
+      },
+      onCancel: function() {
+        console.log('Badge editor cancelled');
+      },
+    };
+  </script>
+  <script type="module" src="/src/index.ts"></script>
+</body>
+</html>
