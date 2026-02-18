@@ -1,5 +1,6 @@
 import { ROTATE_PREV_X, ROTATE_NEXT_X, ROTATE_Y } from '../config';
 import { getUIAsset } from '../rendering/UIAssets';
+import { drawRegion } from '../rendering/Atlas';
 import { addHitRegion } from './HitRegion';
 
 export function setupRotationControls(onRotate: (dir: 'prev' | 'next') => void): void {
@@ -26,6 +27,6 @@ export function drawRotationControls(ctx: CanvasRenderingContext2D): void {
   const rotateLeft = getUIAsset('rotateLeft');
   const rotateRight = getUIAsset('rotateRight');
 
-  if (rotateLeft) ctx.drawImage(rotateLeft, ROTATE_PREV_X, ROTATE_Y);
-  if (rotateRight) ctx.drawImage(rotateRight, ROTATE_NEXT_X, ROTATE_Y);
+  if (rotateLeft) drawRegion(ctx, rotateLeft, ROTATE_PREV_X, ROTATE_Y);
+  if (rotateRight) drawRegion(ctx, rotateRight, ROTATE_NEXT_X, ROTATE_Y);
 }

@@ -7,6 +7,7 @@ import {
 } from "../config";
 import { getText } from "../data/Localization";
 import { getUIAsset } from "../rendering/UIAssets";
+import { drawRegion } from "../rendering/Atlas";
 import * as state from "../model/EditorState";
 import { addHitRegion } from "./HitRegion";
 
@@ -57,7 +58,7 @@ export function drawGenderSelector(ctx: CanvasRenderingContext2D): void {
   const radioOff = getUIAsset("radioOff");
 
   if (radioOn && radioOff) {
-    ctx.drawImage(isMale ? radioOn : radioOff, GENDER_BOY_X, GENDER_Y);
-    ctx.drawImage(!isMale ? radioOn : radioOff, GENDER_GIRL_X, GENDER_Y);
+    drawRegion(ctx, isMale ? radioOn : radioOff, GENDER_BOY_X, GENDER_Y);
+    drawRegion(ctx, !isMale ? radioOn : radioOff, GENDER_GIRL_X, GENDER_Y);
   }
 }

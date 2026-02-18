@@ -1,5 +1,3 @@
-import { PART_TYPES } from '../config';
-
 export interface StyleParts {
   [partType: string]: string; // e.g. { ch: "021", ls: "002", rs: "002" }
 }
@@ -26,73 +24,45 @@ let femaleData: GenderData = {};
 let maleCounts: StyleCounts = {};
 let femaleCounts: StyleCounts = {};
 
-function padModel(str: string): string {
-  while (str.length < 3) str = '0' + str;
-  return str;
-}
-
-function parseGender(genderNode: Element, data: GenderData, counts: StyleCounts): void {
-  const typeNodes = genderNode.children;
-  for (let t = 0; t < typeNodes.length; t++) {
-    const typeNode = typeNodes[t];
-    const partType = typeNode.getAttribute('i')!;
-    data[partType] = {};
-    counts[partType] = typeNode.children.length;
-
-    for (let s = 0; s < typeNode.children.length; s++) {
-      const styleNode = typeNode.children[s];
-      const styleId = styleNode.getAttribute('i')!;
-
-      const style: StyleData = {
-        indexNum: s,
-        parts: {},
-        colors: [],
-      };
-
-      // Parse parts (<ps><p t="ch">21</p>...</ps>)
-      const psNode = styleNode.children[0]; // <ps>
-      if (psNode) {
-        for (let p = 0; p < psNode.children.length; p++) {
-          const pNode = psNode.children[p];
-          const pType = pNode.getAttribute('t')!;
-          const pValue = pNode.textContent!;
-          style.parts[pType] = padModel(pValue);
-        }
-      }
-
-      // Parse colors (<cs><c>E8B137</c>...</cs>)
-      const csNode = styleNode.children[1]; // <cs>
-      if (csNode) {
-        for (let c = 0; c < csNode.children.length; c++) {
-          style.colors.push(csNode.children[c].textContent!);
-        }
-      }
-
-      data[partType][styleId] = style;
-    }
-  }
-}
-
 export async function loadFigureData(url: string): Promise<void> {
   const resp = await fetch(url);
   const text = await resp.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(text, 'text/xml');
-  const root = doc.documentElement; // <ss>
 
   maleData = {};
   femaleData = {};
   maleCounts = {};
   femaleCounts = {};
 
-  for (let i = 0; i < root.children.length; i++) {
-    const gNode = root.children[i];
-    const genderId = gNode.getAttribute('i');
-    if (genderId === 'M') {
-      parseGender(gNode, maleData, maleCounts);
-    } else if (genderId === 'F') {
-      parseGender(gNode, femaleData, femaleCounts);
+  // Track style index per gender+partType
+  const indexCounters: Record<string, number> = {};
+
+  const lines = text.split('\n');
+  for (const line of lines) {
+    if (!line) continue;
+    // gender,partType,styleId,parts,colors
+    const [gender, partType, styleId, partsStr, colorsStr] = line.split(',');
+
+    const data = gender === 'M' ? maleData : femaleData;
+    const counts = gender === 'M' ? maleCounts : femaleCounts;
+
+    if (!data[partType]) data[partType] = {};
+
+    const counterKey = `${gender}:${partType}`;
+    if (indexCounters[counterKey] === undefined) indexCounters[counterKey] = 0;
+    const indexNum = indexCounters[counterKey]++;
+    counts[partType] = indexCounters[counterKey];
+
+    const parts: StyleParts = {};
+    if (partsStr) {
+      for (const pair of partsStr.split('|')) {
+        const [pType, pValue] = pair.split(':');
+        parts[pType] = pValue;
+      }
     }
+
+    const colors = colorsStr ? colorsStr.split('|') : [];
+
+    data[partType][styleId] = { indexNum, parts, colors };
   }
 }
 

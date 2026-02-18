@@ -1,17 +1,19 @@
+import type { AtlasRegion } from './Atlas';
+
 export function applyColorTint(
   ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
+  region: AtlasRegion,
   r: number,
   g: number,
   b: number,
   x: number,
   y: number
 ): void {
-  const w = img.width;
-  const h = img.height;
+  const w = region.w;
+  const h = region.h;
 
   if (r === 255 && g === 255 && b === 255) {
-    ctx.drawImage(img, x, y);
+    ctx.drawImage(region.img, region.x, region.y, w, h, x, y, w, h);
     return;
   }
 
@@ -19,7 +21,7 @@ export function applyColorTint(
   tempCanvas.width = w;
   tempCanvas.height = h;
   const tempCtx = tempCanvas.getContext('2d')!;
-  tempCtx.drawImage(img, 0, 0);
+  tempCtx.drawImage(region.img, region.x, region.y, w, h, 0, 0, w, h);
 
   const imageData = tempCtx.getImageData(0, 0, w, h);
   const data = imageData.data;

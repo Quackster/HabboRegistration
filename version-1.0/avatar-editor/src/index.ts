@@ -7,7 +7,7 @@ import {
   CANVAS_HEIGHT,
   setTextColor,
 } from "./config";
-import { loadSymbolMap, getAllImageIds } from "./data/SymbolMap";
+import { loadSymbolMap } from "./data/SymbolMap";
 import {
   loadFigureData,
   getPartAndColor,
@@ -23,8 +23,7 @@ import {
   padColorIndex,
 } from "./model/FigureString";
 import * as state from "./model/EditorState";
-import { setAssetsPath, preloadSprites } from "./rendering/SpriteLoader";
-import { preloadUIAssets } from "./rendering/UIAssets";
+import { loadAtlas } from "./rendering/Atlas";
 import * as renderer from "./rendering/AvatarRenderer";
 import { renderPreviewIcon } from "./rendering/PreviewIconRenderer";
 import {
@@ -52,7 +51,7 @@ import {
 } from "./ui/RandomizeButton";
 import { setupContinueButton, drawContinueButton } from "./ui/ContinueButton";
 import {
-  loadFrames,
+  buildLoadingFrames,
   startLoadingAnimation,
   stopLoadingAnimation,
 } from "./ui/LoadingScreen";
@@ -84,23 +83,20 @@ async function init() {
   }
   createCanvas(container);
 
-  await loadFrames(assetsPath);
+  // Load atlas first (single image + manifest for all assets)
+  await loadAtlas(assetsPath);
+  buildLoadingFrames();
   startLoadingAnimation(getCtx());
 
-  // Phase 2: Load data files and UI assets while loading screen plays
+  // Phase 2: Load data files while loading screen plays
   const MIN_LOADING_MS = 3000;
   const loadingStart = Date.now();
 
-  setAssetsPath(assetsPath);
   await Promise.all([
     loadSymbolMap(assetsPath),
-    loadFigureData(assetsPath + config.figuredataUrl),
+    loadFigureData(assetsPath + "data/figuredata.csv"),
     loadLocalization(assetsPath + config.localizationUrl),
-    preloadUIAssets(assetsPath),
   ]);
-
-  // Preload all sprites while loading screen is still showing
-  const spritePreload = preloadSprites(getAllImageIds());
 
   const elapsed = Date.now() - loadingStart;
   if (elapsed < MIN_LOADING_MS) {
@@ -108,8 +104,6 @@ async function init() {
       setTimeout(resolve, MIN_LOADING_MS - elapsed),
     );
   }
-
-  await spritePreload;
 
   stopLoadingAnimation();
 

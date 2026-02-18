@@ -4,14 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "extract": "tsx scripts/extract-assets.ts",
+    "extract": "node scripts/extract-assets.ts",
+    "optimize": "node scripts/optimize-assets.ts",
+    "extract-and-optimize": "npm run extract && npm run optimize",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@xmldom/xmldom": "^0.8.11",
+    "sharp": "^0.34.5",
     "typescript": "^5.4.0",
-    "vite": "^5.4.0",
-    "tsx": "^4.7.0"
+    "vite": "^5.4.0"
   }
 }

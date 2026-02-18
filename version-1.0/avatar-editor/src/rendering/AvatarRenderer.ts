@@ -1,7 +1,8 @@
-import { RENDER_ORDER, FLIP_LIST, FLIP_WIDTH, WALK_ELEMENTS, ACTION_PARTS, HEAD_ELEMENTS } from '../config';
+import { RENDER_ORDER, FLIP_LIST, FLIP_WIDTH, ACTION_PARTS } from '../config';
 import { getSpriteInfo } from '../data/SymbolMap';
-import { getSpriteSync, loadSprite } from './SpriteLoader';
+import { getSpriteSync } from './SpriteLoader';
 import { applyColorTint, parseColor } from './ColorTint';
+import { drawRegion } from './Atlas';
 
 export interface PartInfo {
   partName: string;   // sub-part type: bd, ch, hd, etc.
@@ -97,22 +98,18 @@ export function render(
     const spriteInfo = getSpriteInfo(spriteName);
     if (!spriteInfo) continue;
 
-    const img = getSpriteSync(spriteInfo.imageId);
-    if (!img) {
-      // Load async for next frame
-      loadSprite(spriteInfo.imageId);
-      continue;
-    }
+    const region = getSpriteSync(spriteInfo.imageId);
+    if (!region) continue;
 
     const drawX = spriteInfo.offsetX;
     const drawY = spriteInfo.offsetY;
 
     // Apply color tint (skip eyes)
     if (partName === 'ey') {
-      ctx.drawImage(img, drawX, drawY);
+      drawRegion(ctx, region, drawX, drawY);
     } else {
       const [r, g, b] = parseColor(info.color);
-      applyColorTint(ctx, img, r, g, b, drawX, drawY);
+      applyColorTint(ctx, region, r, g, b, drawX, drawY);
     }
   }
 
@@ -139,54 +136,23 @@ export function renderPreview(
     const spriteInfo = getSpriteInfo(spriteName);
     if (!spriteInfo) continue;
 
-    const img = getSpriteSync(spriteInfo.imageId);
-    if (!img) continue;
+    const region = getSpriteSync(spriteInfo.imageId);
+    if (!region) continue;
 
     const drawX = spriteInfo.offsetX;
     const drawY = spriteInfo.offsetY + offsetY;
 
     if (partName === 'ey') {
-      ctx.drawImage(img, drawX, drawY);
+      drawRegion(ctx, region, drawX, drawY);
     } else {
       const [r, g, b] = parseColor(info.color);
-      applyColorTint(ctx, img, r, g, b, drawX, drawY);
+      applyColorTint(ctx, region, r, g, b, drawX, drawY);
     }
   }
 
   ctx.restore();
 }
 
-export async function preloadCurrentSprites(direction: number, currentAction: string): Promise<void> {
-  const flipDir = FLIP_LIST[direction];
-  const promises: Promise<unknown>[] = [];
-
-  for (const partName of RENDER_ORDER) {
-    const info = parts.get(partName);
-    if (!info) continue;
-
-    // Preload std frame
-    const stdName = buildSpriteName('h', 'std', partName, info.modelNum, flipDir, 0);
-    const stdInfo = getSpriteInfo(stdName);
-    if (stdInfo) promises.push(loadSprite(stdInfo.imageId));
-
-    // Preload action frames
-    if (currentAction !== 'std') {
-      const { action, frame } = getActionForPart(partName, currentAction, 0);
-      if (action !== 'std') {
-        if (action === 'wlk') {
-          for (let f = 0; f < 4; f++) {
-            const wName = buildSpriteName('h', 'wlk', partName, info.modelNum, flipDir, f);
-            const wInfo = getSpriteInfo(wName);
-            if (wInfo) promises.push(loadSprite(wInfo.imageId));
-          }
-        } else {
-          const aName = buildSpriteName('h', action, partName, info.modelNum, flipDir, 0);
-          const aInfo = getSpriteInfo(aName);
-          if (aInfo) promises.push(loadSprite(aInfo.imageId));
-        }
-      }
-    }
-  }
-
-  await Promise.allSettled(promises);
+export async function preloadCurrentSprites(_direction: number, _currentAction: string): Promise<void> {
+  // With atlas, all sprites are already loaded — no-op
 }
