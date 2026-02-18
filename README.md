@@ -2,6 +2,13 @@
 
 HTML5 Canvas replacements for the original Flash-based `HabboRegistration.swf` avatar editor. Both versions are written in TypeScript, built with Vite, and render entirely on `<canvas>` with no Flash dependency.
 
+*Part of a series on various Habbo SWF files converted to HTML5*
+
+See the following projects:
+- [HabboLanding](https://github.com/Quackster/HabboLanding)
+- [HabboBadgeEditor](https://github.com/Quackster/HabboBadgeEditor)
+- [HabboRegistration](https://github.com/Quackster/HabboRegistration)
+
 ## Versions
 
 ### [Version 1.0](version-1.0/)
