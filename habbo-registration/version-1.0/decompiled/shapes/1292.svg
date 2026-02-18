@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:ffdec="https://www.free-decompiler.com/flash" xmlns:xlink="http://www.w3.org/1999/xlink" ffdec:objectType="shape" height="36.0px" width="27.0px" xmlns="http://www.w3.org/2000/svg">
+  <g transform="matrix(1.0, 0.0, 0.0, 1.0, -19.0, 48.0)">
+    <pattern ffdec:smoothed="true" height="36" id="PatternID_1292_1" overflow="visible" patternTransform="matrix(1.0, 0.0, 0.0, 1.0, 19.0, -48.0)" patternUnits="userSpaceOnUse" viewBox="0 0 27 36" width="27">
+      <image height="36" width="27" xlink:href="data:image/PNG;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAkCAYAAAB4+EEtAAABU0lEQVR4XsWSjY3CMAxG2YlZugI7MUtXuFm6Aif38qXOk/PTQI8nWQI7+Z5iuN2+zMvVpbyEfebwk2SRsSzLrLC7mUIkmWEzVzXymXVdc0bqlWzblg8Iu2SH+T0qm6nYT58PIpnhL7PfEqjCn6ImM6JAls7oPO+nc32Z8GG+OCNTshmwlQzPvY1//aUyrvoyGUXDMjv4vN/ZbkLRsOxP9BgWUtKUWagPpqz3Ukq6Mh/e+04omZKpxzmhpCrbA55HsPBCL46gpCprhVHIuaBkSMZAyX4e5R+IeIHWHstshWmNXlhbr5HnCS+yO30ZhJR79GL1x2UW6IUVqRfOy3w4pRDn9aX+WdkhPCHlaynTHyqSGfsgDB4QUqZKuVViKV8JcbHeEzIxJg36tkJVyhlmTBqIZmSiKfUCL0/3pgmlXvSJl5FSihdqjjtvs4deLSH/IhniF9Mu6qv6SXgxAAAAAElFTkSuQmCC"/>
+    </pattern>
+    <path d="M19.0 -48.0 L46.0 -48.0 46.0 -12.0 19.0 -12.0 19.0 -48.0" ffdec:fill-bitmapId="1291" style="fill:url(#PatternID_1292_1)"/>
+  </g>
+</svg>

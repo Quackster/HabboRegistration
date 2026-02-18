@@ -1,14 +1,14 @@
-# HabboRegistration
+# Habbo Flash Widgets
 
-HTML5 Canvas replacements for original Habbo Flash editors. All projects are written in TypeScript, built with Vite, and render entirely on `<canvas>` with no Flash dependency.
+Habbo Flash widgets ported to HTML5 via AI. This is a restoration project for education purposes, as Adobe Flash is EOL. All projects are written in TypeScript, built with Vite, and render entirely on `<canvas>` with no Flash dependency.
 
 ## Avatar Editor
 
-### [Version 1.0](version-1.0/)
+### [Version 1.0](habbo-registration/version-1.0/)
 
 Port of the original `HabboRegistration.swf` (v38, 2007). Uses the legacy numeric figure string format (`1750118022210132810129003`) and the older `figure_data_xml.xml` / `figure_editor.xml` data files that shipped with that SWF. Sprites and UI assets are extracted directly from the decompiled SWF via a bundled `extract-assets.ts` script.
 
-### [Version 2.0](version-2.0/)
+### [Version 2.0](habbo-registration/version-2.0/)
 
 Port of the later `HabboRegistration.swf` (v0.916). Uses the dot-delimited figure string format (`hd-180-1.ch-215-82.lg-270-82`) and the restructured `figuredata.xml` / `draworder.xml` data files. Includes Habbo Club item filtering, serialisable menu state, full localisation support, and a more complete callback interface via `window.HabboEditor`. Sprites are sourced from a separate `avatars_big` SWF.
 
