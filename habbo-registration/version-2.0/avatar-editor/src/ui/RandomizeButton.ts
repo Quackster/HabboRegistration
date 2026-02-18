@@ -90,6 +90,7 @@ export class RandomizeButton {
     // End animation
     if (now >= this.cloudAnimationEnd) {
       this.animating = false;
+      this.eventBus.emit('animationEnd');
       this.clouds = [];
       return;
     }
@@ -142,6 +143,7 @@ export class RandomizeButton {
 
     // Start cloud animation
     this.animating = true;
+    this.eventBus.emit('animationStart');
     this.cloudAnimationStart = Date.now();
     this.cloudAnimationEnd = this.cloudAnimationStart + CLOUD_DURATION_MS;
     this.clouds = [];

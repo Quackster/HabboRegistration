@@ -6,6 +6,8 @@ export type EditorEvent =
   | 'setSelected'
   | 'colorSelected'
   | 'randomizeAvatar'
+  | 'animationStart'
+  | 'animationEnd'
   | 'stateChanged';
 
 export interface SetTypeSelectedData {

@@ -14,16 +14,18 @@ export function drawAvatar(ctx: CanvasRenderingContext2D): void {
     state.animationFrame,
     AVATAR_SCALE
   );
+
+  if (state.currentAction === 'wlk') {
+    startAnimation();
+  }
 }
 
 export function startAnimation(): void {
   stopAnimation();
-  if (state.currentAction === 'wlk') {
-    animTimerId = window.setInterval(() => {
-      state.nextAnimationFrame();
-      state.events.emit('redraw');
-    }, ANIMATION_INTERVAL);
-  }
+  animTimerId = window.setInterval(() => {
+    state.nextAnimationFrame();
+    state.events.emit('redraw');
+  }, ANIMATION_INTERVAL);
 }
 
 export function stopAnimation(): void {

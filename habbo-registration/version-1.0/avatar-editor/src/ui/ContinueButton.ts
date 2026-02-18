@@ -5,6 +5,7 @@ import { drawRegion } from "../rendering/Atlas";
 import { addHitRegion } from "./HitRegion";
 
 let isActive = false;
+let onActivate: (() => void) | null = null;
 
 export function setupContinueButton(onContinue: () => void): void {
   isActive = false;
@@ -29,7 +30,14 @@ export function setupContinueButton(onContinue: () => void): void {
         }
       },
     });
+    if (onActivate !== null) {
+      onActivate();
+    }
   }, CONTINUE_DELAY);
+}
+
+export function setupContinueButtonActivate(callback: () => void): void  {
+  onActivate = callback;
 }
 
 export function drawContinueButton(ctx: CanvasRenderingContext2D): void {

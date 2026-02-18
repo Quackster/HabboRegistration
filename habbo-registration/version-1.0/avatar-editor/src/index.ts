@@ -30,7 +30,8 @@ import {
   createCanvas,
   getCtx,
   setRenderCallback,
-  startRenderLoop,
+  onRedraw,
+  startAnimationFramesGarbageCollector
 } from "./ui/CanvasManager";
 import { drawBackground } from "./ui/BackgroundPanel";
 import { setupGenderSelector, drawGenderSelector } from "./ui/GenderSelector";
@@ -42,6 +43,8 @@ import {
 import { setupPartNavigator, drawPartNavigator } from "./ui/PartNavigator";
 import {
   setupColorPalette,
+  setupColorPaletteLeftArrow,
+  setupColorPaletteRightArrow,
   setColors,
   drawColorPalettes,
 } from "./ui/ColorPalette";
@@ -49,7 +52,7 @@ import {
   setupRandomizeButton,
   drawRandomizeButton,
 } from "./ui/RandomizeButton";
-import { setupContinueButton, drawContinueButton } from "./ui/ContinueButton";
+import { setupContinueButton, setupContinueButtonActivate, drawContinueButton } from "./ui/ContinueButton";
 import {
   buildLoadingFrames,
   startLoadingAnimation,
@@ -152,6 +155,14 @@ async function init() {
     requestRedrawAll();
   });
 
+  setupColorPaletteLeftArrow(() => {
+    requestRedrawAll();
+  });
+
+  setupColorPaletteRightArrow(() => {
+    requestRedrawAll();
+  });
+
   setupRandomizeButton(() => {
     randomizeAll();
   });
@@ -162,6 +173,10 @@ async function init() {
     sendAllowedToProceed(true);
     sendSubmit(state.getGenderCode(), figStr);
     submitFormPost(state.getGenderCode(), figStr);
+  });
+
+  setupContinueButtonActivate(() => {
+    requestRedrawAll();
   });
 
   // Set initial color palettes
@@ -183,14 +198,20 @@ async function init() {
     drawContinueButton(ctx);
   });
 
-  startRenderLoop();
+  // Hook CanvasManager to EventBus
+  state.events.on('redraw', onRedraw);
+
+  // Phase 6: First draw of all the UI stuff
+  requestRedrawAll();
+
+  startAnimationFramesGarbageCollector();
 
   // Send initial figure to parent
   sendCurrentFigure();
 }
 
 function requestRedrawAll(): void {
-  // Render loop handles continuous redraw
+  state.events.emit('redraw');
 }
 
 function setInitialLook(figure: string, genderCode: string): boolean {
