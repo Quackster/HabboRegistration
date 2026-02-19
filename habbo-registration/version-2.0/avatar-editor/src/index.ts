@@ -111,7 +111,7 @@ export class HabboAvatarEditor {
 
     // Phase 6: Start rendering
     this.canvasManager.setDrawCallback(() => this.drawAll());
-    this.canvasManager.startContinuousRender();
+    this.canvasManager.requestRedraw();
 
     // Phase 7: Initial bridge calls
     this.bridge.setGenderAndFigure(
@@ -262,6 +262,14 @@ export class HabboAvatarEditor {
 
     bus.on('randomizeAvatar', () => {
       this.handleRandomize();
+    });
+
+    bus.on('animationStart', () => {
+      this.canvasManager.startAnimationLoop();
+    });
+
+    bus.on('animationEnd', () => {
+      this.canvasManager.stopAnimationLoop();
     });
 
     bus.on('stateChanged', () => {

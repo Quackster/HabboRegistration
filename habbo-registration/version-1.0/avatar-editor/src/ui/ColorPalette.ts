@@ -24,6 +24,18 @@ export function setupColorPalette(callback: (partType: string, color: string, in
   }
 }
 
+let onRightArrow: (() => void) | null = null;
+
+export function setupColorPaletteLeftArrow(callback: () => void): void  {
+  onRightArrow = callback;
+}
+
+let onLeftArrow: (() => void) | null = null;
+
+export function setupColorPaletteRightArrow(callback: () => void): void {
+  onLeftArrow = callback;
+}
+
 export function setColors(partType: string, colors: string[], selectedIndex: number): void {
   const p = palettes[partType];
   if (!p) return;
@@ -84,6 +96,7 @@ function rebuildHitRegions(partType: string): void {
         const totalPages = Math.ceil(p.colors.length / COLORS_PER_PAGE);
         p.page = (p.page - 1 + totalPages) % totalPages;
         rebuildHitRegions(partType);
+        if (onLeftArrow) onLeftArrow();
       },
     });
     // Right arrow
@@ -95,6 +108,7 @@ function rebuildHitRegions(partType: string): void {
         const totalPages = Math.ceil(p.colors.length / COLORS_PER_PAGE);
         p.page = (p.page + 1) % totalPages;
         rebuildHitRegions(partType);
+        if (onRightArrow) onRightArrow();
       },
     });
   }
