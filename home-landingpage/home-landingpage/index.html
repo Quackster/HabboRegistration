@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habbo Home Landing v1.0</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #121825;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #fff;
+      }
+      h1 {
+        margin-bottom: 12px;
+        font-size: 18px;
+        color: #8cb6e0;
+      }
+      .info {
+        margin-bottom: 16px;
+        font-size: 12px;
+        color: #667;
+      }
+      #home-landing-container {
+        overflow: hidden;
+      }
+    </style>
+    <script>
+      window.HomeLandingpageConfig = {
+        container: 'home-landingpage-container',
+        assetsPath: 'assets/',
+        //autoRecord: true, // Used to record a video of the canvas
+      };
+    </script>
+  </head>
+  <body>
+    <h1>HomeLandingpage v1.0 — HTML5 Port</h1>
+    <p class="info">Canvas-based animation | 520x353 | 36 fps</p>
+    <div id="home-landingpage-container"></div>
+    <script type="module" src="/src/index.ts"></script>
+  </body>
+</html>

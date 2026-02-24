@@ -1,0 +1,18 @@
+{
+  "name": "habbo-home-landingpage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:atlases": "node scripts/build-atlases.mjs",
+    "build": " tsc && vite build",
+    "postbuild": "cp -r assets dist/",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.0",
+    "typescript": "^6.0.0-beta",
+    "vite": "^7.3.1"
+  }
+}
