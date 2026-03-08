@@ -4,10 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Habbo Registration v1.0</title>
-    <!-- Old: Inline <style> with demo page styles + #editor-container styles.
-         New: Demo page styles in demo/demo.css. #editor-container styles moved to
-         App.module.css .container class (part of library CSS output). -->
-    <link rel="stylesheet" href="/demo/demo.css">
+    <link rel="stylesheet" href="demo.css">
+    <!-- Import map for externalized dependencies — browser resolves bare specifiers via these mappings.
+         Old: libdepixelize-wasm + comlink bundled into a 318 KB code-split chunk by Vite.
+         New: Separate files in libs/, shared with other page components via browser cache.
+         Dev mode: Vite dev server rewrites bare specifiers to full paths — import map not used. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "libdepixelize-wasm": "./libs/libdepixelize-wasm.js",
+          "comlink": "./libs/comlink.js"
+        }
+      }
+    </script>
     <script>
       window.HabboRegistrationConfig = {
         // figure: '1750118022210132810129003',
@@ -39,6 +48,6 @@
     <h1>HabboRegistration v1.0 - HTML5 Port</h1>
     <p class="info">Canvas-based avatar editor | 406x327</p>
     <div id="editor-container"></div>
-    <script type="module" src="/src/index.tsx"></script>
+    <script type="module" src="../src/index.tsx"></script>
   </body>
 </html>

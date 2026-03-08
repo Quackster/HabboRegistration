@@ -1,0 +1,54 @@
+.container {
+  position: absolute;
+  left: var(--ae-color-palette-x);
+}
+
+.swatch {
+  position: absolute;
+  width: var(--ae-color-cell-size);
+  height: var(--ae-color-cell-size);
+  transition: opacity 0.15s;
+}
+
+.colorFill {
+  position: absolute;
+  left: var(--ae-color-cell-inset);
+  top: var(--ae-color-cell-inset);
+  width: calc(var(--ae-color-cell-size) - var(--ae-color-cell-inset) * 2);
+  height: calc(var(--ae-color-cell-size) - var(--ae-color-cell-inset) * 2);
+}
+
+.selector {
+  position: absolute;
+  left: var(--ae-color-selector-offset);
+  top: var(--ae-color-selector-offset);
+  pointer-events: none;
+}
+
+.emptySlot {
+  position: absolute;
+}
+
+.arrow {
+  position: absolute;
+  top: 0;
+  transition: opacity 0.15s;
+}
+
+.arrowLeft {
+  left: var(--ae-color-arrow-left-offset);
+}
+
+.arrowRight {
+  left: var(--ae-color-arrow-right-offset);
+}
+
+.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

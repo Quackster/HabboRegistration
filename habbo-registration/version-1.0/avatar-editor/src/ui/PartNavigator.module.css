@@ -1,0 +1,22 @@
+.button {
+  position: absolute;
+  transition: opacity 0.15s;
+}
+
+.left {
+  left: var(--ae-part-arrow-left-x);
+}
+
+.right {
+  left: var(--ae-part-arrow-right-x);
+}
+
+.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

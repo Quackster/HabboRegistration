@@ -1,0 +1,36 @@
+/* Container — scoped CSS module class applied to editor wrapper in index.tsx.
+   ae- prefixed, hashed, included in habbo-registration.css output. */
+.container {
+  border: 2px solid #2a3a5c;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.root {
+  position: relative;
+  width: var(--ae-canvas-width);
+  height: var(--ae-canvas-height);
+  overflow: hidden;
+  /* Scoped reset — prevent host page CSS from affecting editor */
+  box-sizing: border-box;
+  line-height: normal;
+  text-align: left;
+  font: initial;
+  color: initial;
+}
+
+.root *,
+.root *::before,
+.root *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.root img {
+  max-width: none;
+  max-height: none;
+  display: block;
+}

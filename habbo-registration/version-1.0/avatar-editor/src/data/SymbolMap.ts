@@ -1,17 +1,21 @@
+// SymbolMap — Sprite ID to name mapping with offsets.
+// Both CSVs embedded via Vite ?raw imports, parsed at module scope — no network requests.
+
+import symbolsCsv from './symbols.csv?raw';
+import spriteoffsetsCsv from './spriteoffsets.csv?raw';
+
 export interface SpriteInfo {
   imageId: number;
   offsetX: number;
   offsetY: number;
 }
 
-let nameToInfo: Map<string, SpriteInfo> | null = null;
+let nameToInfo: Map<string, SpriteInfo> = new Map();
 
-export async function loadSymbolMap(assetsPath: string): Promise<void> {
+function parseSymbolMap(symbolsText: string, offsetsText: string): void {
   nameToInfo = new Map();
 
-  // Load symbols.csv: spriteId;spriteName
-  const symbolsResp = await fetch(`${assetsPath}data/symbols.csv`);
-  const symbolsText = await symbolsResp.text();
+  // Parse symbols.csv: spriteId;spriteName
   const idToName = new Map<number, string>();
   for (const line of symbolsText.split('\n')) {
     const trimmed = line.trim();
@@ -22,9 +26,7 @@ export async function loadSymbolMap(assetsPath: string): Promise<void> {
     }
   }
 
-  // Load spriteoffsets.csv: imageId;offsetX;offsetY
-  const offsetsResp = await fetch(`${assetsPath}data/spriteoffsets.csv`);
-  const offsetsText = await offsetsResp.text();
+  // Parse spriteoffsets.csv: imageId;offsetX;offsetY
   const offsets = new Map<number, { offsetX: number; offsetY: number }>();
   for (const line of offsetsText.split('\n')) {
     const trimmed = line.trim();
@@ -38,7 +40,7 @@ export async function loadSymbolMap(assetsPath: string): Promise<void> {
     }
   }
 
-  // Build name → info map
+  // Build name -> info map
   for (const [spriteId, name] of idToName) {
     const imageId = spriteId - 2;
     const offset = offsets.get(imageId);
@@ -52,16 +54,18 @@ export async function loadSymbolMap(assetsPath: string): Promise<void> {
   }
 }
 
+// Parse embedded CSVs at module scope — data available immediately
+parseSymbolMap(symbolsCsv, spriteoffsetsCsv);
+
 export function getSpriteInfo(name: string): SpriteInfo | undefined {
-  return nameToInfo?.get(name);
+  return nameToInfo.get(name);
 }
 
 export function hasSpriteInfo(name: string): boolean {
-  return nameToInfo?.has(name) ?? false;
+  return nameToInfo.has(name);
 }
 
 export function getAllImageIds(): number[] {
-  if (!nameToInfo) return [];
   const ids = new Set<number>();
   for (const info of nameToInfo.values()) {
     ids.add(info.imageId);

@@ -38,7 +38,9 @@ Sprites and UI assets are extracted from the decompiled SWF via a bundled script
 npm run extract-and-optimize
 ```
 
-This reads from `decompiled/` (FFDEC output in the version-1.0 root) and writes to `avatar-editor/assets/`. You only need to run this once, or again if the decompiled source changes.
+This reads from `decompiled/` (FFDEC output in the version-1.0 root) and writes to `avatar-editor/assets/`. The `optimize-assets` script packs raw PNGs at native 1x resolution into WebP atlas pages — no vectorization at build time. Vectorization happens at runtime via `libdepixelize-wasm` (see [Runtime SVG Vectorization](#runtime-svg-vectorization)).
+
+You only need to run this once, or again if the decompiled source changes.
 
 ## Assets
 
@@ -48,8 +50,7 @@ The build copies `avatar-editor/assets/` into `dist/`. This folder contains:
 - `data/figure_editor.xml` - localisation strings
 - `data/symbols.csv` - sprite name to filename mapping
 - `data/spriteoffsets.csv` - sprite x/y offsets extracted from the decompiled SWF
-- `sprites/` - individual avatar part WebP images
-- `ui/` - UI element WebP images (arrows, buttons, backgrounds, palette controls)
+- `atlas_*.webp` - packed atlas pages containing native pixel-art at 1x (sprites, UI, frames)
 
 These must be served from the same path as the JS file (or set `assetsPath` in the config).
 
@@ -126,10 +127,11 @@ version-1.0/
         EditorState.ts          - Shared editor state and event bus
         FigureString.ts         - Numeric figure string parsing and encoding
       rendering/
+        Atlas.ts                - Atlas loading and runtime SVG vectorization (vectorizeSprites)
         AvatarRenderer.ts       - Full avatar rendering (all parts, directions, flipping)
         PreviewIconRenderer.ts  - Small preview icon rendering for the part navigator
-        SpriteLoader.ts         - PNG sprite loading and caching
-        ColorTint.ts            - Pixel-level colour multiplication
+        SpriteLoader.ts         - Thin wrapper over Atlas.getRegion(), returns AtlasRegion
+        ColorTint.ts            - Pixel-level colour multiplication at physical resolution (srcW/srcH)
         UIAssets.ts             - UI image loading from decompiled SWF assets
       ui/
         CanvasManager.ts        - Canvas setup, input handling, render loop
@@ -149,6 +151,16 @@ version-1.0/
     dist/                       - Build output
   decompiled/                   - FFDEC decompiled SWF output
 ```
+
+## Runtime SVG Vectorization
+
+Avatar sprites are vectorized at runtime for resolution independence, using a two-phase approach:
+
+- **Old behavior**: Build-time vectorize PNGs via libdepixelize-wasm → rasterize at 4x supersample via @resvg/resvg-js → downsample with Sharp lanczos3 → pack into WebP atlas. Resolution-locked at 1x.
+- **New behavior**: Pack raw PNGs at native 1x into WebP atlas pages. At runtime, extract sprite pixels from atlas → vectorize in Web Worker pool via `depixelizeBatch()` → create SVG `HTMLImageElement`s at DPI-matched resolution (e.g., 4x on 2x DPI screens).
+- **Changed behavior**: `AtlasRegion` now has `srcW`/`srcH` fields for physical source dimensions (distinct from logical `w`/`h`). `drawRegion()` uses `srcW`/`srcH` for the source rect. `ColorTint` operates at physical resolution for quality preservation. `@resvg/resvg-js` is no longer a dependency; `libdepixelize-wasm` moved from devDependencies to dependencies.
+
+The app loads and renders instantly with raster sprites. Vectorization runs in the background and silently upgrades sprites when complete. On high-DPI displays or when zooming, SVG-backed sprites maintain smooth curves without pixelation.
 
 ## Origin
 
