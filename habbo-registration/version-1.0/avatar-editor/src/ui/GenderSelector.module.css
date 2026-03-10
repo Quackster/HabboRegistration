@@ -1,0 +1,56 @@
+.hitArea {
+  position: absolute;
+  top: calc(var(--ae-gender-y) - var(--ae-gender-hit-pad-y));
+  width: var(--ae-gender-hit-w);
+  height: var(--ae-gender-hit-h);
+  transition: opacity 0.15s;
+}
+
+.hitBoy {
+  left: calc(var(--ae-gender-boy-x) - var(--ae-gender-hit-pad-x));
+}
+
+.hitGirl {
+  left: calc(var(--ae-gender-girl-x) - var(--ae-gender-hit-pad-x));
+}
+
+.label {
+  position: absolute;
+  top: 1px;
+  transform: translateX(-50%);
+  font: bold var(--ae-font-size) Verdana;
+  pointer-events: none;
+  user-select: none;
+}
+
+.labelBoy {
+  left: calc(var(--ae-gender-boy-x) + var(--ae-gender-label-offset-x));
+}
+
+.labelGirl {
+  left: calc(var(--ae-gender-girl-x) + var(--ae-gender-label-offset-x));
+}
+
+.radio {
+  position: absolute;
+  top: var(--ae-gender-y);
+  pointer-events: none;
+}
+
+.radioBoy {
+  left: var(--ae-gender-boy-x);
+}
+
+.radioGirl {
+  left: var(--ae-gender-girl-x);
+}
+
+.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

@@ -1,0 +1,31 @@
+.container {
+  position: absolute;
+  left: var(--ae-continue-x);
+  top: var(--ae-continue-y);
+  width: var(--ae-continue-w);
+  height: var(--ae-continue-h);
+}
+
+.label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font: normal var(--ae-font-size) Verdana;
+  color: #FFFFFF;
+  letter-spacing: var(--ae-letter-spacing);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-shadow: 0 0 0 rgba(255,255,255,0.7);
+}
+
+.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

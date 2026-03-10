@@ -9,8 +9,6 @@ declare global {
       post_figure?: string;
       post_gender?: string;
       container?: string;
-      backgroundColor?: string;
-      textColor?: string;
       localization_url?: string;
     };
     HabboRegistration?: {
@@ -28,15 +26,17 @@ export function getConfig() {
     gender: cfg.gender || "",
     rawFigure: cfg.figure,
     rawGender: cfg.gender,
-    assetsPath: cfg.assetsPath || "./",
+    // undefined if not set — loadAtlas() uses Vite-imported URLs by default.
+    // Only set when host page provides assetsPath override (non-Vite consumers).
+    assetsPath: cfg.assetsPath,
     postUrl: cfg.post_url || "",
     postEnabled: cfg.post_enabled ?? false,
     postFigure: cfg.post_figure || "figure",
     postGender: cfg.post_gender || "gender",
     container: cfg.container || "editor-container",
-    backgroundColor: cfg.backgroundColor || "",
-    textColor: cfg.textColor || "",
-    localizationUrl: cfg.localization_url || "data/figure_editor.xml",
+    // undefined if not set — default strings embedded via ?raw import in Localization.ts.
+    // Only set when host page provides localization_url override in HabboRegistrationConfig.
+    localizationUrl: cfg.localization_url,
   };
 }
 

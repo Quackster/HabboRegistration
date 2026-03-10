@@ -1,0 +1,16 @@
+.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--ae-canvas-width);
+  height: var(--ae-canvas-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame {
+  background-repeat: no-repeat;
+  filter: invert(1);
+  image-rendering: pixelated;
+}

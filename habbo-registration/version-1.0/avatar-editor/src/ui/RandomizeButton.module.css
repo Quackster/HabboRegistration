@@ -1,0 +1,30 @@
+.container {
+  position: absolute;
+  left: var(--ae-randomize-x);
+  top: var(--ae-randomize-y);
+  width: var(--ae-randomize-w);
+  height: var(--ae-randomize-h);
+  transition: opacity 0.2s;
+}
+
+.label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font: bold var(--ae-font-size) Verdana;
+  color: #000000;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}

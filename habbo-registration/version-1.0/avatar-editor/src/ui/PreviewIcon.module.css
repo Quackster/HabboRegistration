@@ -1,0 +1,33 @@
+.container {
+  position: absolute;
+  left: var(--ae-preview-x);
+}
+
+.bg {
+  position: absolute;
+  left: var(--ae-preview-bg-offset-x);
+  top: var(--ae-preview-bg-offset-y);
+}
+
+.clip {
+  position: absolute;
+  left: var(--ae-preview-clip-offset-x);
+  top: var(--ae-preview-clip-offset-y);
+  width: var(--ae-preview-clip-w);
+  height: var(--ae-preview-clip-h);
+  overflow: hidden;
+}
+
+.part {
+  position: absolute;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+.raster {
+  image-rendering: pixelated;
+}
+
+.vector {
+  image-rendering: crisp-edges;
+}

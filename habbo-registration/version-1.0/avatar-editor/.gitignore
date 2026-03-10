@@ -1,3 +1,5 @@
+.eslintcache
 node_modules/
 dist/
 assets/
+__screenshots__/

@@ -1,3 +1,8 @@
+// FigureData — Figure parsing/encoding for gender-specific part styles and colors.
+// CSV embedded via Vite ?raw import, parsed at module scope — no network requests.
+
+import figuredataCsv from './figuredata.csv?raw';
+
 export interface StyleParts {
   [partType: string]: string; // e.g. { ch: "021", ls: "002", rs: "002" }
 }
@@ -24,10 +29,7 @@ let femaleData: GenderData = {};
 let maleCounts: StyleCounts = {};
 let femaleCounts: StyleCounts = {};
 
-export async function loadFigureData(url: string): Promise<void> {
-  const resp = await fetch(url);
-  const text = await resp.text();
-
+function parseFigureData(text: string): void {
   maleData = {};
   femaleData = {};
   maleCounts = {};
@@ -65,6 +67,9 @@ export async function loadFigureData(url: string): Promise<void> {
     data[partType][styleId] = { indexNum, parts, colors };
   }
 }
+
+// Parse embedded CSV at module scope — data available immediately
+parseFigureData(figuredataCsv);
 
 function getGenderData(gender: string): GenderData {
   return gender === 'female' || gender === 'F' ? femaleData : maleData;

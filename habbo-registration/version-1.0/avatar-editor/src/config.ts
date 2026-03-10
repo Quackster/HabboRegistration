@@ -1,12 +1,4 @@
-// Canvas dimensions (matching original SWF)
-export const CANVAS_WIDTH = 406;
-export const CANVAS_HEIGHT = 327;
-
 // Avatar rendering
-export const AVATAR_X = 104;
-export const AVATAR_Y = 226;
-export const AVATAR_SCALE = 2;
-export const FLIP_WIDTH = 68;
 export const FLIP_LIST = [0, 1, 2, 3, 2, 1, 0, 7];
 
 // Depth-ordered sub-parts for rendering
@@ -14,6 +6,14 @@ export const RENDER_ORDER = ['li', 'lh', 'ls', 'bd', 'sh', 'lg', 'ch', 'hd', 'fc
 
 // Main editable part types (figure string order)
 export const PART_TYPES = ['hr', 'hd', 'ch', 'lg', 'sh'] as const;
+
+// Human-readable labels for avatar body part codes (used in alt text for accessibility).
+export const PART_LABELS: Record<string, string> = {
+  li: 'Left item', lh: 'Left hand', ls: 'Left sleeve',
+  bd: 'Body', sh: 'Shoes', lg: 'Legs', ch: 'Chest',
+  hd: 'Head', fc: 'Face', ey: 'Eyes', hr: 'Hair',
+  ri: 'Right item', rh: 'Right hand', rs: 'Right sleeve',
+};
 
 // Walk-animated elements
 export const WALK_ELEMENTS = ['li', 'lh', 'ls', 'bd', 'sh', 'lg', 'ri', 'rh', 'rs'];
@@ -34,53 +34,18 @@ export const ACTION_PARTS: Record<string, string[]> = {
 export const WALK_FRAMES = 4;
 export const ANIMATION_INTERVAL = 150; // ms per walk frame
 
-// Layout positions
-export const BACKGROUND_Y = 44;
-
-// Gender buttons
-export const GENDER_BOY_X = 136;
-export const GENDER_GIRL_X = 186;
-export const GENDER_Y = 20;
-export const GENDER_LABEL_Y = 2;
-
-// Part navigation arrows
-export const PART_ARROW_LEFT_X = 0;
-export const PART_ARROW_RIGHT_X = 64;
-export const PART_ARROW_START_Y = 42;
-export const PART_ARROW_SPACING = 45;
-
-// Preview icons
-export const PREVIEW_X = 10;
-export const PREVIEW_START_Y = 37;
-export const PREVIEW_SPACING = 45;
-export const PREVIEW_OFFSETS: Record<string, number> = { hr: 82, hd: 76, ch: 53, lg: 32, sh: 21 };
-
-// Rotation arrows
-export const ROTATE_PREV_X = 119;
-export const ROTATE_NEXT_X = 200;
-export const ROTATE_Y = 235;
-
-// Color palette
-export const COLOR_PALETTE_X = 265;
-export const COLOR_PALETTE_START_Y = 44;
-export const COLOR_PALETTE_SPACING = 44;
-export const COLORS_PER_PAGE = 16;
-export const COLOR_COLS = 8;
-export const COLOR_CELL_SIZE = 15;
-
-// Randomize button
-export const RANDOMIZE_X = 124;
-export const RANDOMIZE_Y = 275;
-
-// Continue button
-export const CONTINUE_X = 298;
-export const CONTINUE_Y = 308;
+// Continue button delay
 export const CONTINUE_DELAY = 3000; // ms before activation
 
-// Text color (runtime-configurable)
-let _textColor = '#333333';
-export function setTextColor(color: string): void { _textColor = color; }
-export function getTextColor(): string { return _textColor; }
+// Randomize button cooldown — 3s with visual grey-out (opacity 0.5) to prevent rapid-fire clicks.
+export const RANDOMIZE_COOLDOWN = 3000; // ms between allowed clicks
+
+// Gender selector cooldown — 3s with visual grey-out (opacity 0.5) to prevent rapid gender toggling.
+export const GENDER_COOLDOWN = 3000; // ms between allowed clicks
+
+// Global click throttle — any button click disables ALL buttons for 1s with opacity 0.5.
+// All buttons participate: gender, part nav, color palette, rotation, randomize, continue.
+export const CLICK_THROTTLE = 1000; // ms global cooldown after any button click
 
 // Default figure
 export const DEFAULT_FIGURE = '1750118022210132810129003';

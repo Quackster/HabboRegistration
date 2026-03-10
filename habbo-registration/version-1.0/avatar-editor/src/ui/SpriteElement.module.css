@@ -1,0 +1,7 @@
+.sprite {
+  background-repeat: no-repeat;
+}
+
+.raster {
+  image-rendering: pixelated;
+}
